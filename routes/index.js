@@ -14,4 +14,8 @@ router.get('/', isLogged, function(req, res, next) {
   })
 });
 
+router.get("/protected", isLogged, (req, res, next) => {
+  res.json({msg: "You are logged now."})
+})
+
 module.exports = router;

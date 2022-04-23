@@ -17,7 +17,6 @@ passport.use(new FacebookStrategy({
     callbackURL: "http://localhost:3000/auth/facebook/redirect",
     profileFields: ["id", "email", "birthday", "gender", "location", "name"]
 }, (accessToken, refreshToken, profile, cb) => {
-    console.log(profile);
     User.findOne({"fbID": profile.id}).then(user => {
         if(user) {return cb(null, user)}
         else {
