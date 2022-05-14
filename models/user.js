@@ -12,9 +12,7 @@ const UserSchema = new Schema({
     profilePhoto: {type: String},
     friendsList: [{type: Schema.Types.ObjectId, ref: "User"}],
     receivedRequests: [{type: Schema.Types.ObjectId, ref: "User"}],
-    sentRequsts: [{type: Schema.Types.ObjectId, ref: "User"}],
-    postsList: [{type: Schema.Types.ObjectId, ref: "Post"}],
-    commentsList: [{type: Schema.Types.ObjectId, ref: "Comment"}],
+    sentRequests: [{type: Schema.Types.ObjectId, ref: "User"}],
 })
 
 module.exports = mongoose.model("User", UserSchema);

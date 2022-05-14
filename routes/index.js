@@ -1,5 +1,6 @@
 const express = require('express');
 const router = express.Router();
+const postController = require("../controllers/postController");
 
 const isLogged = (req, res, next) => {
   if(!req.user) {res.json({msg: "You are not loggeed in"})}
@@ -7,15 +8,13 @@ const isLogged = (req, res, next) => {
 }
 
 /* GET home page. */
-router.get('/', isLogged, function(req, res, next) {
-  res.json({
-    msg: "Index page",
-    user: req.user
-  })
+router.get('/', isLogged, postController.getPosts);
+
+router.get('/newPost', isLogged, (req, res, next) => {
+  res.render("postForm");
 });
 
-router.get("/protected", isLogged, (req, res, next) => {
-  res.json({msg: "You are logged now."})
-})
+/* Create post */
+router.post("/", isLogged, postController.createPost);
 
 module.exports = router;
