@@ -18,6 +18,9 @@ db.on("error", console.error.bind(console, "mongo connection error"));
 
 const indexRoute = require("./routes/index");
 const authRoute = require("./routes/auth");
+const profileRoute = require("./routes/profile");
+const postsRoute = require("./routes/posts");
+const commentsRoute = require("./routes/comments");
 
 const app = express();
 
@@ -43,6 +46,9 @@ app.use(passport.session())
 
 app.use("/", indexRoute);
 app.use("/auth", authRoute);
+app.use("/profile", profileRoute);
+app.use("/posts", postsRoute);
+app.use("/comments", commentsRoute);
 app.get("/logout", (req, res) => {
   req.logout();
   res.redirect("/");
