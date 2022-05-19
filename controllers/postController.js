@@ -29,7 +29,8 @@ exports.createPost = [
 		const errors = validationResult(req);
 		const newPost = new Post({
 			user: req.user.id,
-			text: req.body.text
+			text: req.body.text,
+			image: req.image ? req.image : ""
 		});
 		if(!errors.isEmpty()) {
 				res.send("Text field must have maximum of 999 characters.")
