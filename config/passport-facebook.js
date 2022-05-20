@@ -14,7 +14,7 @@ passport.deserializeUser((id, done) => {
 passport.use(new FacebookStrategy({
     clientID: process.env.FB_CLIENTID,
     clientSecret: process.env.FB_SECRET,
-    callbackURL: "http://localhost:3000/auth/facebook/redirect",
+    callbackURL: "https://pacific-hamlet-40360.herokuapp.com/auth/facebook/redirect",
     profileFields: ["id", "email", "birthday", "gender", "location", "name"]
 }, (accessToken, refreshToken, profile, cb) => {
     User.findOne({"fbID": profile.id}).then(user => {
