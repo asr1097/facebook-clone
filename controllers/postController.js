@@ -1,6 +1,9 @@
 const User = require("../models/user");
 const Post = require("../models/post");
 const Comment = require("../models/comment");
+const fs = require("fs");
+const path = require("path");
+const helpers = require("../helpers");
 const { body, validationResult } = require("express-validator");
 
 const isSameUser = (req, res, next) => {
@@ -62,7 +65,7 @@ exports.editPost = [
 		if(!errors.isEmpty()) {
 			res.send("Text field must have maximum of 999 characters.")
 		} else {
-			Post.findByIdAndUpdate(req.body.postID, {text: req.body.text, image: req.body.image})
+			Post.findByIdAndUpdate(req.body.postID, {text: req.body.text, image: req.image ? req.image : ""})
 				.then(editedPost => console.log("Post editted."))
 				.catch(err => res.json(err))	
 		};
@@ -71,7 +74,7 @@ exports.editPost = [
 
 exports.deletePost = [
 	isSameUser,
-	
+
 	body("postID").exists(),
 
 	(req, res, next) => {
@@ -79,13 +82,28 @@ exports.deletePost = [
 		if(!errors.isEmpty()) {
 			res.send("Post ID does not exist.")
 		} else {
-			Promise.all([
-				Comment.deleteMany({post: req.body.postID}),
-				Post.findByIdAndDelete(req.body.postID)
-			]).then(done => console.log("Post deleted")).catch(err => res.json(err))
-		}
+			Post.findById(req.body.postID).then(post => {
+				/* Delete image file if any */
+				if(post.image) {fs.unlinkSync(`public/images/${req.user.id}/${post.image}`)};
+
+				/* Find all post's comments, including comments' children */
+				Comment.find({post: post._id}).then(comments => {
+				let commentsToDelete = [...comments];
+				for(let i = 0; i < commentsToDelete.length; i++) {
+					let newCommentsToDelete = helpers.findChildComments(commentsToDelete[i]);
+					if(newCommentsToDelete) {commentsToDelete = [commentsToDelete, ...newCommentsToDelete]};
+					newCommentsToDelete = [];
+				}
+				
+				/* Delete all comments and post */
+				Promise.all([
+					Comment.deleteMany({_id: {$in: commentsToDelete}}),
+					Post.findByIdAndDelete(req.body.postID)
+				]).then(done => console.log("Post deleted.")).catch(err => console.log(err))
+			})
+		})};
 	}
-]
+];
 
 exports.likePost = (req, res, next) => {
 	Post.findByIdAndUpdate(req.body.id, {$push: {likes: req.user.id}})

@@ -1,6 +1,5 @@
-const User = require("../models/user");
-const Post = require("../models/post");
 const Comment = require("../models/comment");
+const helpers = require("../helpers");
 const { body, validationResult } = require("express-validator");
 
 const isSameUser = (req, res, next) => {
@@ -10,18 +9,6 @@ const isSameUser = (req, res, next) => {
 			console.log("Comment doesn't belong to logged user.")
 		}
 	})
-}
-
-const findChildComments = (parentCommentID) => {
-    Comment.find({parentComment: parentCommentID})
-    .then(comments => {
-        if(comments.length){
-            return comments;
-        } else {
-            return false;
-        }
-    })
-    .catch(err => console.log(err))
 }
 
 exports.getComment = (req, res, next) => {
@@ -75,7 +62,7 @@ exports.editComment = [
 
 exports.deleteComment = [
     isSameUser,
-    
+
     body("text").isLength({max: 999}).trim().escape(),
     body("postID").exists(),
     body("commentID").exists(),
@@ -83,7 +70,7 @@ exports.deleteComment = [
     (req, res, next) => {
         let commentsToDelete = [req.body.commentID];
         for(let i = 0; i < commentsToDelete.length; i++) {
-            let newCommentsToDelete = findChildComments(commentsToDelete[i]);
+            let newCommentsToDelete = helpers.findChildComments(commentsToDelete[i]);
             if(newCommentsToDelete) {commentsToDelete = [commentsToDelete, ...newCommentsToDelete]};
             newCommentsToDelete = [];
         };
