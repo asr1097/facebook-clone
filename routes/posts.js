@@ -44,7 +44,7 @@ router.get("/:id/like", helpers.isLogged, (req, res, next) => {
 });
 
 /* Comment on the post */
-router.post("/:id/comments/new", helpers.isLogged, commentController.createPostComment);
+router.post("/:id/comments/new", helpers.isLogged, commentController.createComment);
 
 router.get("/:id/comments/new", helpers.isLogged, (req, res) => {
     res.render("createPostComment");

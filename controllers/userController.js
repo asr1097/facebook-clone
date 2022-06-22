@@ -51,3 +51,11 @@ exports.removeFriend = (req, res, next) => {
     ]).then(result => console.log("Friend removed.")).catch(err => console.log(err))
 };
 
+exports.deleteUser = (req, res, next) => {
+    Promise.all([
+        Comment.deleteMany({user: req.user.id}),
+        Post.deleteMany({user: req.user.id}),
+        User.findByIdAndDelete(req.user.id)
+    ]).then(done => console.log("User deleted")).catch(err => res.json(err));
+};
+

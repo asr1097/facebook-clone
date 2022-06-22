@@ -10,7 +10,7 @@ router.get("/:id", helpers.isLogged, commentController.getComment);
 router.get("/:id/new", helpers.isLogged, (req, res) => res.render("createCommentComment"));
 
 /* Comment on a comment */
-router.post("/:id/new", helpers.isLogged, commentController.createCommentComment);
+router.post("/:id/new", helpers.isLogged, commentController.createComment);
 
 /* Like a comment */
 router.post("/:id/like", helpers.isLogged, commentController.likeComment);
