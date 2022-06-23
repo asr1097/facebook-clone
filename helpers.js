@@ -1,3 +1,4 @@
+require("dotenv").config();
 const mongoose = require("mongoose");
 const Comment = require("./models/comment");
 
@@ -14,14 +15,16 @@ exports.isLogged = (req, res, next) => {
 };
 
 exports.findChildComments = (parentCommentID) => {
-    Comment.find({parentComment: parentCommentID})
-    .then(comments => {
-        if(comments.length){
-            return comments;
-        } else {
-            return false;
-        }
-    })
-    .catch(err => console.log(err))
+    return Promise.resolve(Comment.find({parentComment: parentCommentID})
+        .then(comments => {
+            if(comments.length){
+                let commentsID = [];
+                comments.forEach(comment => commentsID.push(comment._id.toString()))
+                return commentsID;
+            } else {
+                return false;
+            }
+        })
+        .catch(err => console.log(err)))
 }
 

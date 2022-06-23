@@ -2,13 +2,12 @@ const User = require("../models/user");
 const Post = require("../models/post");
 const Comment = require("../models/comment");
 const fs = require("fs");
-const path = require("path");
 const helpers = require("../helpers");
 const { body, validationResult } = require("express-validator");
 
 const isSameUser = (req, res, next) => {
 	Post.findById(req.body.postID).then(post => {
-		if(post.user === req.user.id) {next()}
+		if(post.user.toString() === req.user.id) {next()}
 		else{
 			console.log("Post doesn't belong to logged user.")
 		}
@@ -86,22 +85,12 @@ exports.deletePost = [
 				/* Delete image file if any */
 				if(post.image) {fs.unlinkSync(`public/images/${req.user.id}/${post.image}`)};
 
-				/* Find all post's comments, including comments' children */
-				Comment.find({post: post._id}).then(comments => {
-				let commentsToDelete = [...comments];
-				for(let i = 0; i < commentsToDelete.length; i++) {
-					let newCommentsToDelete = helpers.findChildComments(commentsToDelete[i]);
-					if(newCommentsToDelete) {commentsToDelete = [commentsToDelete, ...newCommentsToDelete]};
-					newCommentsToDelete = [];
-				}
-				
-				/* Delete all comments and post */
 				Promise.all([
-					Comment.deleteMany({_id: {$in: commentsToDelete}}),
+					Comment.deleteMany({post: post._id}),
 					Post.findByIdAndDelete(req.body.postID)
 				]).then(done => console.log("Post deleted.")).catch(err => console.log(err))
 			})
-		})};
+		}
 	}
 ];
 

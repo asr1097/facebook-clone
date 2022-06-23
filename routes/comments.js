@@ -12,6 +12,9 @@ router.get("/:id/new", helpers.isLogged, (req, res) => res.render("createComment
 /* Comment on a comment */
 router.post("/:id/new", helpers.isLogged, commentController.createComment);
 
+router.get("/:id/delete", helpers.isLogged, (req, res) => res.render("deleteComment"));
+router.post("/:id/delete", helpers.isLogged, commentController.deleteComment);
+
 /* Like a comment */
 router.post("/:id/like", helpers.isLogged, commentController.likeComment);
 router.get("/:id/like", (req, res) => res.render("likeCommentComment"));

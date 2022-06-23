@@ -4,7 +4,7 @@ const { body, validationResult } = require("express-validator");
 
 const isSameUser = (req, res, next) => {
 	Comment.findById(req.body.commentID).then(comment => {
-		if(comment.user === req.user.id) {next()}
+		if(comment.user.toString() === req.user.id) {next()}
 		else{
 			console.log("Comment doesn't belong to logged user.")
 		}
@@ -67,17 +67,20 @@ exports.deleteComment = [
     body("postID").exists(),
     body("commentID").exists(),
 
-    (req, res, next) => {
+    async (req, res, next) => {
         let commentsToDelete = [req.body.commentID];
         for(let i = 0; i < commentsToDelete.length; i++) {
-            let newCommentsToDelete = helpers.findChildComments(commentsToDelete[i]);
-            if(newCommentsToDelete) {commentsToDelete = [commentsToDelete, ...newCommentsToDelete]};
-            newCommentsToDelete = [];
-        };
+            let comments = await helpers.findChildComments(commentsToDelete[i]);
+            if(comments){
+                let newCommentsToDelete = [...commentsToDelete, ...comments];
+                commentsToDelete = newCommentsToDelete
+            };          
+        }
         Comment.deleteMany({_id: {$in: commentsToDelete}})
             .then(deletedComments => console.log(deletedComments))
             .catch(err => console.log(err));
     }
+    
 ]
 
 exports.likeComment = (req, res, next) => {

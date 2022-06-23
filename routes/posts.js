@@ -50,6 +50,9 @@ router.get("/:id/comments/new", helpers.isLogged, (req, res) => {
     res.render("createPostComment");
 });
 
+router.get("/:id/delete", helpers.isLogged, (req, res) => res.render("deletePost"));
+router.post("/:id/delete", helpers.isLogged, postController.deletePost);
+
 /* Like a post */
 router.post("/:id/like", helpers.isLogged, postController.likePost);
 
