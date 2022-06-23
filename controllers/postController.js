@@ -64,7 +64,7 @@ exports.editPost = [
 		if(!errors.isEmpty()) {
 			res.send("Text field must have maximum of 999 characters.")
 		} else {
-			Post.findByIdAndUpdate(req.body.postID, {text: req.body.text, image: req.image ? req.image : ""})
+			Post.findByIdAndUpdate(req.body.postID, {text: req.body.text})
 				.then(editedPost => console.log("Post editted."))
 				.catch(err => res.json(err))	
 		};
