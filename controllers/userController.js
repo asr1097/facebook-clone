@@ -1,6 +1,7 @@
 const User = require("../models/user");
 const Post = require("../models/post");
 const Comment = require("../models/comment");
+const helpers = require("../helpers");
 
 /* Get user profile*/
 exports.getUser = (req, res, next) => {
@@ -51,11 +52,23 @@ exports.removeFriend = (req, res, next) => {
     ]).then(result => console.log("Friend removed.")).catch(err => console.log(err))
 };
 
-exports.deleteUser = (req, res, next) => {
-    Promise.all([
-        Comment.deleteMany({user: req.user.id}),
-        Post.deleteMany({user: req.user.id}),
-        User.findByIdAndDelete(req.user.id)
-    ]).then(done => console.log("User deleted")).catch(err => res.json(err));
+exports.deleteUser = async (req, res, next) => {
+    Comment.find({user: req.user.id}).then(comments => {
+        let commentsToDelete = [];
+        comments.forEach(comment => commentsToDelete.push(comment._id.toString()));
+        for(let i = 0; i < commentsToDelete.length; i++) {
+            let comments = await helpers.findChildComments(commentsToDelete[i]);
+            if(comments){
+                let newCommentsToDelete = [...commentsToDelete, ...comments];
+                commentsToDelete = newCommentsToDelete
+            };
+        }
+        Promise.all([
+            Comment.deleteMany({$_id: {$in: commentsToDelete}}),
+            Post.deleteMany({user: req.user.id}),
+            User.findByIdAndDelete(req.user.id)
+        ]).then(done => console.log("User deleted")).catch(err => res.json(err));
+    })
+    
 };
 
