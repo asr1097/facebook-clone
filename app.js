@@ -10,6 +10,12 @@ const helmet = require("helmet");
 const compression = require("compression");
 const mongoose = require("mongoose");
 const passport = require("passport");
+const cors = require("cors");
+
+const corsOptions = {
+  origin: new RegExp("http://localhost:*"),
+  credentials: true
+}
 
 const mongoDB = process.env.MONGODB_URI;
 mongoose.connect(mongoDB, { useUnifiedTopology: true, useNewUrlParser: true });
@@ -27,6 +33,7 @@ const app = express();
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'ejs');
 
+app.use(cors(corsOptions));
 app.use(helmet());
 app.use(compression());
 
@@ -50,9 +57,13 @@ app.use("/profile", profileRoute);
 app.use("/posts", postsRoute);
 app.use("/comments", commentsRoute);
 app.get("/logout", (req, res) => {
-  req.logout();
-  res.redirect("/");
-});
+    res.clearCookie("session");
+    res.clearCookie("session.sig");
+    res.clearCookie("FBClone_loggedIn");
+    req.logout();
+    res.redirect("http://localhost:3001");
+  }
+);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {

@@ -1,4 +1,5 @@
 const Comment = require("../models/comment");
+const Post = require("../models/post");
 const helpers = require("../helpers");
 const { body, validationResult } = require("express-validator");
 
@@ -8,7 +9,7 @@ const isSameUser = (req, res, next) => {
 		else{
 			console.log("Comment doesn't belong to logged user.")
 		}
-	})
+	}).catch(err => console.log(err))
 }
 
 exports.getComment = (req, res, next) => {
@@ -30,13 +31,16 @@ exports.createComment = [
         const newComment = new Comment({
             user: req.user.id,
             post: req.body.postID,
-            parentComment: req.body.parentCommentID,
-            text: req.body.text
+            text: req.body.text,
         });
+        if(req.body.parentCommentID) {newComment.parentComment = req.body.parentCommentID}
         if(!errors.isEmpty()) {
             res.json(err);
         } else {
-            newComment.save().then(comment => res.json(comment))
+            newComment.save().then(comment => {
+                Post.findByIdAndUpdate(req.body.postID, {$push: {comments: comment._id}})
+                    .then(post => res.json(comment))
+            })
         }
     }
 ];
@@ -76,9 +80,13 @@ exports.deleteComment = [
                 commentsToDelete = newCommentsToDelete
             };          
         }
-        Comment.deleteMany({_id: {$in: commentsToDelete}})
-            .then(deletedComments => console.log(deletedComments))
-            .catch(err => console.log(err));
+        Promise.all([
+            Post.findByIdAndUpdate(req.body.postID, {$pull: {comments: {$in: commentsToDelete}}}),
+            
+            Comment.deleteMany({_id: {$in: commentsToDelete}})
+            ])
+                .then(done => console.log(done))
+                .catch(err => console.log(err))
     }
     
 ]

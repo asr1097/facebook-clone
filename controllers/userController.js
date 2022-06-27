@@ -52,8 +52,8 @@ exports.removeFriend = (req, res, next) => {
     ]).then(result => console.log("Friend removed.")).catch(err => console.log(err))
 };
 
-exports.deleteUser = async (req, res, next) => {
-    Comment.find({user: req.user.id}).then(comments => {
+exports.deleteUser = (req, res, next) => {
+    Comment.find({user: req.user.id}).then(async (comments) => {
         let commentsToDelete = [];
         comments.forEach(comment => commentsToDelete.push(comment._id.toString()));
         for(let i = 0; i < commentsToDelete.length; i++) {

@@ -2,7 +2,6 @@ const User = require("../models/user");
 const Post = require("../models/post");
 const Comment = require("../models/comment");
 const fs = require("fs");
-const helpers = require("../helpers");
 const { body, validationResult } = require("express-validator");
 
 const isSameUser = (req, res, next) => {
@@ -17,19 +16,14 @@ const isSameUser = (req, res, next) => {
 exports.getPosts = (req, res, next) => {
     User.findById(req.user.id).then(loggedUser => {
         Post.find({$or: [{user: {$in: loggedUser.friendsList}}, {user: req.user.id}]})
-        	.populate("user")
-        	.then(posts => {
-			  Comment.find({post: {$in: posts}})
-			  	.then(comments => res.json({posts, comments}))
-				.catch(err => console.log(err));
-			})
-			.catch(err => console.log(err));
+			.populate(["user", "comments"])
+			.then(posts => res.json(posts))
     });
 };
 
 exports.getPost = (req, res, next) => {
 	Post.findById(req.params.id)
-		.populate("user")	
+		.populate(["user", "comments"])
 		.then(post => res.json(post))
 };
 
