@@ -17,14 +17,20 @@ exports.getPosts = (req, res, next) => {
     User.findById(req.user.id).then(loggedUser => {
         Post.find({$or: [{user: {$in: loggedUser.friendsList}}, {user: req.user.id}]})
 			.populate(["user", "comments"])
-			.then(posts => res.json(posts))
+			.then(posts => {
+				console.log(res);
+				res.json(posts);
+			})
     });
 };
 
 exports.getPost = (req, res, next) => {
 	Post.findById(req.params.id)
 		.populate(["user", "comments"])
-		.then(post => res.json(post))
+		.then(post => {
+			res.set("Cross-Origin-Resource-Policy", "cross-origin");
+			res.json(post);
+		})
 };
 
 exports.createPost = [
@@ -35,7 +41,7 @@ exports.createPost = [
 		const newPost = new Post({
 			user: req.user.id,
 			text: req.body.text,
-			image: req.image ? req.image : ""
+			image: req.image ? `${req.user.id}/${req.image}` : ""
 		});
 		if(!errors.isEmpty()) {
 				res.send("Text field must have maximum of 999 characters.")

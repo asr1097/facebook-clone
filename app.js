@@ -14,7 +14,8 @@ const cors = require("cors");
 
 const corsOptions = {
   origin: new RegExp("http://localhost:*"),
-  credentials: true
+  credentials: true,
+  exposedHeaders: ["Cross-Origin-Resource-Policy"]
 }
 
 const mongoDB = process.env.MONGODB_URI;
@@ -34,7 +35,9 @@ app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'ejs');
 
 app.use(cors(corsOptions));
-app.use(helmet());
+app.use(helmet({
+  crossOriginResourcePolicy: {policy: "cross-origin"},
+}));
 app.use(compression());
 
 app.use(logger('dev'));
