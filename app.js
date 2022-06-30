@@ -11,6 +11,8 @@ const compression = require("compression");
 const mongoose = require("mongoose");
 const passport = require("passport");
 const cors = require("cors");
+const multer = require("multer");
+const upload = multer();
 
 const corsOptions = {
   origin: new RegExp("http://localhost:*"),
@@ -40,9 +42,10 @@ app.use(helmet({
 }));
 app.use(compression());
 
+app.use(upload.array())
 app.use(logger('dev'));
 app.use(express.json());
-app.use(express.urlencoded({ extended: false }));
+app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 app.use(cookieSession({

@@ -39,4 +39,8 @@ router.get("/:id/remove", helpers.isLogged, (req, res, next) => {
 /* Delete account */
 router.post("/:id/delete", helpers.isLogged, userController.deleteUser)
 router.get("/:id/delete", helpers.isLogged, (req, res) => res.render("deleteUser"))
+
+/* Search for users */
+router.post("/search", helpers.isLogged, userController.searchUsers);
+
 module.exports = router;

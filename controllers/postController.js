@@ -16,21 +16,16 @@ const isSameUser = (req, res, next) => {
 exports.getPosts = (req, res, next) => {
     User.findById(req.user.id).then(loggedUser => {
         Post.find({$or: [{user: {$in: loggedUser.friendsList}}, {user: req.user.id}]})
+			.sort([["date", "-1"]])
 			.populate(["user", "comments"])
-			.then(posts => {
-				console.log(res);
-				res.json(posts);
-			})
+			.then(posts => {res.json(posts)})
     });
 };
 
 exports.getPost = (req, res, next) => {
 	Post.findById(req.params.id)
 		.populate(["user", "comments"])
-		.then(post => {
-			res.set("Cross-Origin-Resource-Policy", "cross-origin");
-			res.json(post);
-		})
+		.then(post => {res.json(post)})
 };
 
 exports.createPost = [

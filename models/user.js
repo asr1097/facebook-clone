@@ -4,8 +4,11 @@ const Schema = mongoose.Schema;
 const UserSchema = new Schema({
     fbID: {type: String, required: true},
     email: {type: String},
-    firstName: {type: String},
-    lastName: {type: String},
+    name: {
+        first: {type: String},
+        last: {type: String},
+        full: {type: String}
+    },
     gender: {type: String},
     dateOfBirth: {type: String},
     location: {type: String},
@@ -13,6 +16,18 @@ const UserSchema = new Schema({
     friendsList: [{type: Schema.Types.ObjectId, ref: "User"}],
     receivedRequests: [{type: Schema.Types.ObjectId, ref: "User"}],
     sentRequests: [{type: Schema.Types.ObjectId, ref: "User"}],
+});
+
+UserSchema.pre("save", function(next) {
+    this.name.full = this.name.first + " " + this.name.last;
+    return next();
+})
+
+UserSchema.pre("insertMany", function(next, docs) {
+    docs.map(doc => {
+        doc.name.full = doc.name.first + " " + doc.name.last;
+    })
+    return next();
 })
 
 module.exports = mongoose.model("User", UserSchema);

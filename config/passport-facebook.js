@@ -23,8 +23,10 @@ passport.use(new FacebookStrategy({
             const newUser = new User({
                 fbID: profile.id,
                 email: profile._json.email,
-                firstName: profile.name.givenName,
-                lastName: profile.name.familyName,
+                name: {
+                    first: profile.name.givenName,
+                    last: profile.name.familyName,
+                },
                 gender: profile._json.gender,
                 dateOfBirth: profile._json.birthday,
                 location: profile._json.location.name
