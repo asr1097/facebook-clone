@@ -73,11 +73,8 @@ exports.deleteUser = (req, res, next) => {
 };
 
 exports.searchUsers = (req, res, next) => {
-    User.find({name: {full: {$regex: req.body.name, $options: "i"}}})
-        .then(users => {
-            console.log(users)
-            res.json(users)
-        })
+    User.find({"name.full": {$regex: req.body.name, $options: "i"}})
+        .then(users => {res.json(users)})
         .catch(err => res.json(err))
 }
 
