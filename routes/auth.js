@@ -9,8 +9,8 @@ router.get("/facebook", passport.authenticate("facebook", {
    
 router.get("/facebook/redirect", passport.authenticate("facebook", { failureRedirect: '/auth/facebook', failureMessage: true }),
  (req, res, next) => {
-    res.cookie("FBClone_loggedIn", "true");
-    res.redirect("http://localhost:3001/");
+    res.cookie("loggedIn", true);
+    res.redirect("https://localhost:3001/facebook-clone-client");
 });
 
 module.exports = router;

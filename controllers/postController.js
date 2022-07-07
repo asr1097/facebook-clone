@@ -18,7 +18,7 @@ exports.getPosts = (req, res, next) => {
         Post.find({$or: [{user: {$in: loggedUser.friendsList}}, {user: req.user.id}]})
 			.sort([["date", "-1"]])
 			.populate(["user", "comments"])
-			.then(posts => {res.json(posts)})
+			.then(posts => {res.json({posts, id: req.user.id, user: req.user})})
     });
 };
 
@@ -42,7 +42,11 @@ exports.createPost = [
 				res.send("Text field must have maximum of 999 characters.")
 		} else {
 				newPost.save()
-					.then(doc => res.redirect("/"))
+					.then(doc => {
+						res.io.on("connection", socket => {
+							socket.emit("new post", doc)
+						})
+						res.redirect("/")})
 					.catch(err => console.log(err))
 		}
 	}

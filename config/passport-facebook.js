@@ -14,7 +14,7 @@ passport.deserializeUser((id, done) => {
 passport.use(new FacebookStrategy({
     clientID: process.env.FB_CLIENTID,
     clientSecret: process.env.FB_SECRET,
-    callbackURL: "http://localhost:3000/auth/facebook/redirect",
+    callbackURL: "https://localhost:3000/auth/facebook/redirect",
     profileFields: ["id", "email", "birthday", "gender", "location", "name"]
 }, (accessToken, refreshToken, profile, cb) => {
     User.findOne({"fbID": profile.id}).then(user => {
@@ -29,7 +29,7 @@ passport.use(new FacebookStrategy({
                 },
                 gender: profile._json.gender,
                 dateOfBirth: profile._json.birthday,
-                location: profile._json.location.name
+                location: profile._json.location.name || ""
             })
             newUser.save().then(user => {return cb(null, user)}).catch(err => cb(err, null));
         }

@@ -10,12 +10,16 @@ exports.getUser = (req, res, next) => {
         .catch(err => console.log(err));
 };
 
+exports.getLoggedUser = (req, res, next) => {
+    res.json(req.user)
+}
+
 /* Send friend request */
 exports.sendFriendRequest = (req, res, next) => {
     Promise.all([
         User.findByIdAndUpdate(req.body.profileID, {$push: {receivedRequests: req.user.id}}),
         User.findByIdAndUpdate(req.user.id, {$push: {sentRequests: req.body.profileID}})
-    ]).then(result => console.log("Request sent!")).catch(err => console.log(err))
+    ]).then(result => res.sendStatus(200)).catch(err => res.sendStatus(418))
 };
 
 /* Accept friend request */
@@ -25,7 +29,7 @@ exports.acceptFriendRequest = (req, res, next) => {
         User.findByIdAndUpdate(req.body.profileID, {$push: {friendsList: req.user.id}}),
         User.findByIdAndUpdate(req.user.id, {$pull: {receivedRequests: req.body.profileID}}),
         User.findByIdAndUpdate(req.user.id, {$push: {friendsList: req.body.profileID}})
-    ]).then(result => console.log("Friend added.")).catch(err => console.log(err))
+    ]).then(result => res.sendStatus(200)).catch(err => res.sendStatus(418))
 };
 
 /* Reject friend request */
@@ -33,7 +37,7 @@ exports.rejectFriendRequest = (req, res, next) => {
     Promise.all([
         User.findByIdAndUpdate(req.body.profileID, {$pull: {sentRequests: req.user.id}}),
         User.findByIdAndUpdate(req.user.id, {$pull: {receivedRequests: req.body.profileID}})
-    ]).then(result => console.log("Friend request rejected.")).catch(err => console.log(err))
+    ]).then(result => res.sendStatus(200)).catch(err => res.sendStatus(418))
 };
 
 /* Cancel friend request */
@@ -41,7 +45,7 @@ exports.cancelFriendRequest = (req, res, next) => {
     Promise.all([
         User.findByIdAndUpdate(req.body.profileID, {$pull: {receivedRequests: req.user.id}}),
         User.findByIdAndUpdate(req.user.id, {$pull: {sentRequests: req.body.profileID}})
-    ]).then(result => console.log("Friend request canceled.")).catch(err => console.log(err))
+    ]).then(result => res.sendStatus(200)).catch(err => res.sendStatus(418))
 };
 
 /* Remove friend */

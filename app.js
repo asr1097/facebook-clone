@@ -13,9 +13,10 @@ const passport = require("passport");
 const cors = require("cors");
 const multer = require("multer");
 const upload = multer();
+const fs = require("fs");
 
 const corsOptions = {
-  origin: new RegExp("http://localhost:*"),
+  origin: new RegExp("https://localhost:*"),
   credentials: true,
   exposedHeaders: ["Cross-Origin-Resource-Policy"]
 }
@@ -32,10 +33,58 @@ const postsRoute = require("./routes/posts");
 const commentsRoute = require("./routes/comments");
 
 const app = express();
+const server = require("https").createServer({
+  key: fs.readFileSync("key.pem"),
+  cert: fs.readFileSync("cert.pem"),
+}, app);
+const io = require("socket.io")(server, {
+  cors: {
+    origin: new RegExp("localhost:*")
+  }
+});
+
+let activeSockets = [];
+
+io.use((socket, next) => {
+  socket.userID = socket.handshake.auth.socketID;
+  next();
+})
+
+io.on("connection", (socket) => {
+  activeSockets.push({
+    SID: socket.id,
+    userID: socket.userID
+  });
+
+  socket.join(socket.userID)
+
+  console.log("User connected: " + socket.userID)
+  
+  io.to(socket.userID).emit("activeUsers", activeSockets)
+
+  socket.broadcast.emit("new connection", socket.userID)
+
+  socket.on("message", (msg) => {
+      console.log("Message sent from " + socket.userID + " to " + msg.to)
+      console.log(msg.text)
+  })
+
+  socket.on("disconnect", () => {
+    const indexOfSocket = activeSockets.findIndex(activeSocket => 
+      activeSocket.userID === socket.userID);
+    let discUser = activeSockets.splice(indexOfSocket, 1);
+    socket.broadcast.emit("user disconnected", discUser[0].userID);
+    console.log("User disconnected: " + discUser[0].userID)
+  })
+})
 
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'ejs');
 
+app.use((req, res, next) => {
+  res.io = io;
+  next();
+})
 app.use(cors(corsOptions));
 app.use(helmet({
   crossOriginResourcePolicy: {policy: "cross-origin"},
@@ -63,11 +112,10 @@ app.use("/profile", profileRoute);
 app.use("/posts", postsRoute);
 app.use("/comments", commentsRoute);
 app.get("/logout", (req, res) => {
-    res.clearCookie("session");
-    res.clearCookie("session.sig");
-    res.clearCookie("FBClone_loggedIn");
+    req.session = null;
+    res.clearCookie("loggedIn");
     req.logout();
-    res.redirect("http://localhost:3001");
+    res.redirect("https://localhost:3001/facebook-clone-client");
   }
 );
 
@@ -84,4 +132,4 @@ app.use(function(err, req, res, next) {
   res.json({err: err.message});
 });
 
-module.exports = app;
+module.exports = { app, server };
