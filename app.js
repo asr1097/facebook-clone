@@ -32,6 +32,7 @@ const authRoute = require("./routes/auth");
 const profileRoute = require("./routes/profile");
 const postsRoute = require("./routes/posts");
 const commentsRoute = require("./routes/comments");
+const messagesRoute = require("./routes/messages");
 
 const app = express();
 
@@ -86,6 +87,7 @@ app.use("/auth", authRoute);
 app.use("/profile", profileRoute);
 app.use("/posts", postsRoute);
 app.use("/comments", commentsRoute);
+app.use("/messages", messagesRoute);
 app.get("/logout", (req, res) => {
     req.session = null;
     res.clearCookie("loggedIn");
