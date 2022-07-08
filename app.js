@@ -14,6 +14,7 @@ const cors = require("cors");
 const multer = require("multer");
 const upload = multer();
 const fs = require("fs");
+const socketIOHandlers = require("./socketio-handlers");
 
 const corsOptions = {
   origin: new RegExp("https://localhost:*"),
@@ -33,50 +34,24 @@ const postsRoute = require("./routes/posts");
 const commentsRoute = require("./routes/comments");
 
 const app = express();
+
 const server = require("https").createServer({
   key: fs.readFileSync("key.pem"),
   cert: fs.readFileSync("cert.pem"),
 }, app);
+
 const io = require("socket.io")(server, {
   cors: {
     origin: new RegExp("localhost:*")
   }
 });
 
-let activeSockets = [];
-
 io.use((socket, next) => {
   socket.userID = socket.handshake.auth.socketID;
   next();
 })
 
-io.on("connection", (socket) => {
-  activeSockets.push({
-    SID: socket.id,
-    userID: socket.userID
-  });
-
-  socket.join(socket.userID)
-
-  console.log("User connected: " + socket.userID)
-  
-  io.to(socket.userID).emit("activeUsers", activeSockets)
-
-  socket.broadcast.emit("new connection", socket.userID)
-
-  socket.on("message", (msg) => {
-      console.log("Message sent from " + socket.userID + " to " + msg.to)
-      console.log(msg.text)
-  })
-
-  socket.on("disconnect", () => {
-    const indexOfSocket = activeSockets.findIndex(activeSocket => 
-      activeSocket.userID === socket.userID);
-    let discUser = activeSockets.splice(indexOfSocket, 1);
-    socket.broadcast.emit("user disconnected", discUser[0].userID);
-    console.log("User disconnected: " + discUser[0].userID)
-  })
-})
+socketIOHandlers(io);
 
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'ejs');
