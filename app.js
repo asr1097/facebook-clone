@@ -33,6 +33,7 @@ const profileRoute = require("./routes/profile");
 const postsRoute = require("./routes/posts");
 const commentsRoute = require("./routes/comments");
 const messagesRoute = require("./routes/messages");
+const notificationsRoute = require("./routes/notifications");
 
 const app = express();
 

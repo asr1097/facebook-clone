@@ -1,10 +1,22 @@
 const Message = require("../models/message");
 
 exports.getMessages = (req, res, next) => {
-    Message.find({$or: {to: req.user.id, from: req.user.id}})
-                .sort("date", "desc")
+    Message.find({$or: [{to: req.user.id}, {from: req.user.id}]})
+                .sort({"content.date": "asc"})
                 .then(messages => {
                     res.json(messages)
                 })
                 .catch(err => console.log(err))
+};
+
+exports.readMessages = (req, res) => {
+    let messageArray = req.body.readMessages.split(",")
+    Message.updateMany({_id: {$in: messageArray}}, {"content.read": true})
+        .then(msgs => {
+            if(res.io.sockets.adapter.rooms.has(req.body.friend)){
+                res.io.to(req.body.friend).emit("message read", req.user.id);
+            }
+            res.sendStatus(200)
+        })
+        .catch(err => console.log(err));
 };

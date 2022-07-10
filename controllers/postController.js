@@ -1,6 +1,7 @@
 const User = require("../models/user");
 const Post = require("../models/post");
 const Comment = require("../models/comment");
+const Notification = require("../models/notification");
 const fs = require("fs");
 const { body, validationResult } = require("express-validator");
 
@@ -93,11 +94,34 @@ exports.deletePost = [
 	}
 ];
 
-exports.likePost = (req, res, next) => {
-	Post.findByIdAndUpdate(req.body.id, {$push: {likes: req.user.id}})
-		.then(doc => console.log("Post liked."))
-		.catch(err => console.log(err));
-};
+exports.likePost = [
+
+	(req, res, next) => {
+		Post.findByIdAndUpdate(req.body.id, {$push: {likes: req.user.id}})
+			.then(doc => {
+				req.post = doc;
+				next()
+			})
+			.catch(err => console.log(err));
+	},
+
+	(req, res, next) => {
+		const newNotification = new Notification({
+			user: req.post.user,
+			profileID: req.user.id,
+			postID: req.post._id,
+			date: Date.now(),
+			type: "liked post"
+		});
+		newNotification.save().then(notif => {
+			if(res.io.sockets.adapter.rooms.has(req.post.user)) {
+				res.io.to(req.post.user).emit("new notification", notif);
+				res.sendStatus(200);
+			} else {res.sendStatus(200);}
+		}).catch(err => console.log(err));
+	}
+
+] 
 
 exports.unlikePost = (req, res, next) => {
 	Post.findByIdAndUpdate(req.body.id, {$pull: {likes: req.user.id}})

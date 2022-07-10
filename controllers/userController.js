@@ -1,6 +1,7 @@
 const User = require("../models/user");
 const Post = require("../models/post");
 const Comment = require("../models/comment");
+const Notification = require("../models/notification");
 const helpers = require("../helpers");
 
 /* Get user profile*/
@@ -12,7 +13,7 @@ exports.getUser = (req, res, next) => {
 
 exports.getLoggedUser = (req, res, next) => {
     res.json(req.user)
-}
+};
 
 /* Send friend request */
 exports.sendFriendRequest = (req, res, next) => {
@@ -23,14 +24,32 @@ exports.sendFriendRequest = (req, res, next) => {
 };
 
 /* Accept friend request */
-exports.acceptFriendRequest = (req, res, next) => {
-    Promise.all([
-        User.findByIdAndUpdate(req.body.profileID, {$pull: {sentRequests: req.user.id}}),
-        User.findByIdAndUpdate(req.body.profileID, {$push: {friendsList: req.user.id}}),
-        User.findByIdAndUpdate(req.user.id, {$pull: {receivedRequests: req.body.profileID}}),
-        User.findByIdAndUpdate(req.user.id, {$push: {friendsList: req.body.profileID}})
-    ]).then(result => res.sendStatus(200)).catch(err => res.sendStatus(418))
-};
+exports.acceptFriendRequest = [
+
+    (req, res, next) => {
+        Promise.all([
+            User.findByIdAndUpdate(req.body.profileID, {$pull: {sentRequests: req.user.id}}),
+            User.findByIdAndUpdate(req.body.profileID, {$push: {friendsList: req.user.id}}),
+            User.findByIdAndUpdate(req.user.id, {$pull: {receivedRequests: req.body.profileID}}),
+            User.findByIdAndUpdate(req.user.id, {$push: {friendsList: req.body.profileID}})
+        ]).then(result => {next()}).catch(err => res.sendStatus(418))
+    },
+
+    (req, res, next) => {
+        const newNotification = new Notification({
+            profileID: req.user.id,
+            user: req.body.profileID,
+            type: "friend request accepted",
+            date: Date.now()
+        })
+        newNotification.save().then(notif => {
+            if(res.io.sockets.adapter.rooms.has(req.body.profileID)) {
+                res.io.to(req.body.profileID).emit("new notification", notif);
+                res.sendStatus(200);
+            } else {res.sendStatus(200)}
+        }).catch(err => console.log(err))
+    }
+]
 
 /* Reject friend request */
 exports.rejectFriendRequest = (req, res, next) => {
@@ -56,6 +75,10 @@ exports.removeFriend = (req, res, next) => {
     ]).then(result => console.log("Friend removed.")).catch(err => console.log(err))
 };
 
+/* 
+    Delete user's comments and all of children comments,
+    user's posts and user at the end.
+*/
 exports.deleteUser = (req, res, next) => {
     Comment.find({user: req.user.id}).then(async (comments) => {
         let commentsToDelete = [];

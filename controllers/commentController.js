@@ -1,4 +1,5 @@
 const Comment = require("../models/comment");
+const Notification = require("../models/notification");
 const Post = require("../models/post");
 const helpers = require("../helpers");
 const { body, validationResult } = require("express-validator");
@@ -25,6 +26,7 @@ exports.getComment = (req, res, next) => {
 exports.createComment = [
     body("text").isLength({max: 999}).trim().escape(),
     body("postID").exists(),
+    body("user").exists(),
 
     (req, res, next) => {
         const errors = validationResult(req)
@@ -39,9 +41,30 @@ exports.createComment = [
         } else {
             newComment.save().then(comment => {
                 Post.findByIdAndUpdate(req.body.postID, {$push: {comments: comment._id}})
-                    .then(post => res.json(comment))
+                    .then(post => next())
             })
         }
+    },
+
+    (req, res, next) => {
+        const newNotification = new Notification({
+            user: req.body.user,
+            profileID: req.user.id,
+            date: Date.now()
+        })
+        if(req.body.parentCommentID) {
+            newNotification.commentID = req.body.parentCommentID;
+            newNotification.type = "comment comment";
+        } else {
+            newNotification.postID = req.body.postID;
+            newNotification.type = "post comment"
+        }
+        newNotification.save().then(notif => {
+            if(res.io.sockets.adapter.rooms.has(req.body.user)) {
+                res.io.to(req.body.user).emit("new notification", notif);
+                res.sendStatus(200)
+            } else{res.sendStatus(200)}
+        }).catch(err => console.log(err))
     }
 ];
 
@@ -91,11 +114,33 @@ exports.deleteComment = [
     
 ]
 
-exports.likeComment = (req, res, next) => {
-    Comment.findByIdAndUpdate(req.body.id, {$push: {likes: req.user.id}})
-		.then(doc => console.log("Comment liked."))
-		.catch(err => console.log(err));
-};
+exports.likeComment = [
+
+    (req, res, next) => {
+        Comment.findByIdAndUpdate(req.body.id, {$push: {likes: req.user.id}})
+            .then(doc => {
+                req.comment = doc;
+                next()
+            })
+            .catch(err => console.log(err));
+    },
+
+    (req, res, next) => {
+        const newNotification = new Notification({
+            user: req.comment.user,
+            profileID: req.user.id,
+            commentID: req.comment._id,
+            date: Date.now(),
+            type: "liked comment"
+        }).then(notif => {
+            if(res.io.sockets.adapter.rooms.has(req.comment.user)) {
+                res.io.to(req.comment.user).emit("new notification", notif);
+                res.sendStatus(200);
+            } else {res.sendStatus(200)}
+        }).catch(err => console.log(err))
+    }
+]
+
 
 exports.unlikeComment = (req, res, next) => {
 	Comment.findByIdAndUpdate(req.body.id, {$pull: {likes: req.user.id}})

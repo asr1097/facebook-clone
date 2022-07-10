@@ -26,22 +26,21 @@ module.exports = (io) => {
         socket.broadcast.emit("new connection", socket.userID);
       
         socket.on("message", (msg) => {
+            let newMessage = new Message({
+              from: msg.from,
+              to: msg.to,
+              content: {
+                  text: msg.content.text,
+                  date: msg.content.date
+                  
+              }});
             if(io.sockets.adapter.rooms.has(msg.to)){
-                let newMessage = new Message({
-                    from: msg.from,
-                    to: msg.to,
-                    context: {
-                        text: msg.text,
-                        date: msg.date
-                    }
-                });
-                newMessage.save().then(msg => {
-                    console.log("Message sent from " + msg.from + " to " + msg.to);
-                    socket.to(msg.to).emit("new message", msg);
+                newMessage.save().then(savedMsg => {
+                    io.to(msg.to).to(socket.id).emit("new message", savedMsg);
                 }).catch(err => console.log(err));
             } else {
-                newMessage.save().then(msg => {
-                    console.log("Message sent from " + msg.from + " to " + msg.to);
+                newMessage.save().then(savedMsg => {
+                    io.to(socket.id).emit("new message", savedMsg);
             })};
         });
       
