@@ -8,6 +8,10 @@ const PostSchema = new Schema({
     likes: [{type: Schema.Types.ObjectId, ref: "User"}],
     comments: [{type: Schema.Types.ObjectId, ref: "Comment", default: []}],
     date: {type: Date, default: Date.now()}
+}, {toJSON: {virtuals: true}});
+
+PostSchema.virtual("url").get(function() {
+    return "https://localhost:3001/facebook-clone-client/posts/" + this._id 
 });
 
 module.exports = mongoose.model("Post", PostSchema);

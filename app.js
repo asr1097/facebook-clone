@@ -89,6 +89,7 @@ app.use("/profile", profileRoute);
 app.use("/posts", postsRoute);
 app.use("/comments", commentsRoute);
 app.use("/messages", messagesRoute);
+app.use("/notifications", notificationsRoute);
 app.get("/logout", (req, res) => {
     req.session = null;
     res.clearCookie("loggedIn");

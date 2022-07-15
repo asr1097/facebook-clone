@@ -40,6 +40,7 @@ exports.createComment = [
             res.json(err);
         } else {
             newComment.save().then(comment => {
+                req.comment = comment;
                 Post.findByIdAndUpdate(req.body.postID, {$push: {comments: comment._id}})
                     .then(post => next())
             })
@@ -50,10 +51,11 @@ exports.createComment = [
         const newNotification = new Notification({
             user: req.body.user,
             profileID: req.user.id,
-            date: Date.now()
+            date: Date.now(),
+            newCommentID: req.comment._id
         })
         if(req.body.parentCommentID) {
-            newNotification.commentID = req.body.parentCommentID;
+            newNotification.parentCommentID = req.body.parentCommentID;
             newNotification.type = "comment comment";
         } else {
             newNotification.postID = req.body.postID;

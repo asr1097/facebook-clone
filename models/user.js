@@ -16,18 +16,22 @@ const UserSchema = new Schema({
     friendsList: [{type: Schema.Types.ObjectId, ref: "User"}],
     receivedRequests: [{type: Schema.Types.ObjectId, ref: "User"}],
     sentRequests: [{type: Schema.Types.ObjectId, ref: "User"}],
-});
+}, {toJSON: {virtuals: true}});
 
 UserSchema.pre("save", function(next) {
     this.name.full = this.name.first + " " + this.name.last;
     return next();
-})
+});
 
 UserSchema.pre("insertMany", function(next, docs) {
     docs.map(doc => {
         doc.name.full = doc.name.first + " " + doc.name.last;
     })
     return next();
-})
+});
+
+UserSchema.virtual("url").get(function() {
+    return "https://localhost:3001/facebook-clone-client/profile/" + this._id;
+});
 
 module.exports = mongoose.model("User", UserSchema);

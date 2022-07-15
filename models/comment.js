@@ -8,6 +8,10 @@ const CommentSchema = new Schema({
     parentComment: {type: Schema.Types.ObjectId, ref: "Comment"},
     likes: [{type: Schema.Types.ObjectId, ref: "User"}],
     date: {type: Date, default: Date.now()}
-});
+}, {toJSON: {virtuals: true}});
+
+CommentSchema.virtual("url").get(function() {
+    return "https://localhost:3001/facebook-clone-client/comments/" + this._id
+})
 
 module.exports = mongoose.model("Comment", CommentSchema);

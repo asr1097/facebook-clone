@@ -4,7 +4,9 @@ const Schema = mongoose.Schema;
 const NotificationSchema = new Schema({
     type: {type: String, required: true},
     user: {type: Schema.Types.ObjectId, ref: "User", required: true},
+    newCommentID: {type: Schema.Types.ObjectId, ref: "Comment"},
     commentID: {type: Schema.Types.ObjectId, ref: "Comment"},
+    parentCommentID: {type: Schema.Types.ObjectId, ref: "Comment"},
     postID: {type: Schema.Types.ObjectId, ref: "Post"},
     profileID: {type: Schema.Types.ObjectId, ref: "User", required: true},
     date: {type: Date, required: true},
