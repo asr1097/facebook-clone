@@ -11,8 +11,6 @@ const compression = require("compression");
 const mongoose = require("mongoose");
 const passport = require("passport");
 const cors = require("cors");
-const multer = require("multer");
-const upload = multer();
 const fs = require("fs");
 const socketIOHandlers = require("./socketio-handlers");
 
@@ -67,8 +65,6 @@ app.use(helmet({
   crossOriginResourcePolicy: {policy: "cross-origin"},
 }));
 app.use(compression());
-
-app.use(upload.array())
 app.use(logger('dev'));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));

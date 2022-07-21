@@ -31,7 +31,7 @@ UserSchema.pre("insertMany", function(next, docs) {
 });
 
 UserSchema.virtual("url").get(function() {
-    return "https://localhost:3001/facebook-clone-client/profile/" + this._id;
+    return "profile/" + this._id;
 });
 
 module.exports = mongoose.model("User", UserSchema);

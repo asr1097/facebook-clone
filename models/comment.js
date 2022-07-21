@@ -11,7 +11,7 @@ const CommentSchema = new Schema({
 }, {toJSON: {virtuals: true}});
 
 CommentSchema.virtual("url").get(function() {
-    return "https://localhost:3001/facebook-clone-client/comments/" + this._id
+    return "comments/" + this._id
 })
 
 module.exports = mongoose.model("Comment", CommentSchema);

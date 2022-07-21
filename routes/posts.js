@@ -28,39 +28,21 @@ const upload = multer({
     limits: {fileSize: maxSize}
 });
 
-/* Render new post form */
-router.get('/new', helpers.isLogged, (req, res, next) => {
-    res.render("postForm");
-});
-
 /* Create new post */
 router.post("/new", helpers.isLogged, upload.single("imageField"), postController.createPost);
 
 /* GET post */
 router.get("/:id", helpers.isLogged, postController.getPost);
 
-router.get("/:id/like", helpers.isLogged, (req, res, next) => {
-    res.render("likePostForm")
-});
-
 /* Comment on the post */
 router.post("/:id/comments/new", helpers.isLogged, commentController.createComment);
 
-router.get("/:id/comments/new", helpers.isLogged, (req, res) => {
-    res.render("createPostComment");
-});
-
-router.get("/:id/delete", helpers.isLogged, (req, res) => res.render("deletePost"));
 router.post("/:id/delete", helpers.isLogged, postController.deletePost);
 
 /* Like a post */
-router.post("/:id/like", helpers.isLogged, postController.likePost);
-
-router.get("/:id/unlike", helpers.isLogged, (req, res) => {
-    res.render("unlikePostForm");
-});
+router.post("/:id/like", helpers.isLogged, upload.single("id"), postController.likePost);
 
 /* Unlike a post */
-router.post("/:id/unlike", helpers.isLogged, postController.unlikePost);
+router.post("/:id/unlike", helpers.isLogged, upload.single("id"), postController.unlikePost);
 
 module.exports = router;

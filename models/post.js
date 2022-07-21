@@ -11,7 +11,7 @@ const PostSchema = new Schema({
 }, {toJSON: {virtuals: true}});
 
 PostSchema.virtual("url").get(function() {
-    return "https://localhost:3001/facebook-clone-client/posts/" + this._id 
+    return "posts/" + this._id 
 });
 
 module.exports = mongoose.model("Post", PostSchema);

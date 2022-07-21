@@ -18,14 +18,14 @@ exports.getPosts = (req, res, next) => {
     User.findById(req.user.id).then(loggedUser => {
         Post.find({$or: [{user: {$in: loggedUser.friendsList}}, {user: req.user.id}]})
 			.sort([["date", "-1"]])
-			.populate(["user", "comments"])
+			.populate(["user", "comments", "likes"])
 			.then(posts => {res.json({posts, id: req.user.id, user: req.user})})
     });
 };
 
 exports.getPost = (req, res, next) => {
 	Post.findById(req.params.id)
-		.populate(["user", "comments"])
+		.populate(["user", "comments", "likes"])
 		.then(post => {res.json(post)})
 };
 
@@ -43,11 +43,7 @@ exports.createPost = [
 				res.send("Text field must have maximum of 999 characters.")
 		} else {
 				newPost.save()
-					.then(doc => {
-						res.io.on("connection", socket => {
-							socket.emit("new post", doc)
-						})
-						res.redirect("/")})
+					.then(doc => res.sendStatus(200))
 					.catch(err => console.log(err))
 		}
 	}
@@ -106,25 +102,31 @@ exports.likePost = [
 	},
 
 	(req, res, next) => {
-		const newNotification = new Notification({
-			user: req.post.user,
-			profileID: req.user.id,
-			postID: req.post._id,
-			date: Date.now(),
-			type: "liked post"
-		});
-		newNotification.save().then(notif => {
-			if(res.io.sockets.adapter.rooms.has(req.post.user)) {
-				res.io.to(req.post.user).emit("new notification", notif);
-				res.sendStatus(200);
-			} else {res.sendStatus(200);}
-		}).catch(err => console.log(err));
+		if(req.user.id === req.post.user._id.toString()){res.sendStatus(200)}
+		else {
+			const newNotification = new Notification({
+				user: req.post.user,
+				profileID: req.user.id,
+				postID: req.post._id,
+				date: Date.now(),
+				type: "liked post"
+			});
+			newNotification.save().then(notif => {
+				Notification.findById(notif._id)
+					.populate(["profileID", "postID"])
+					.then(populatedNotif => {
+						if(res.io.sockets.adapter.rooms.has(req.post.user.toString())) {
+							res.io.to(req.post.user.toString()).emit("new notification", populatedNotif);
+							res.sendStatus(200);
+						} else {res.sendStatus(200);}})
+					.catch(err => console.log(err))
+					})
+				.catch(err => console.log(err))}
 	}
-
 ] 
 
 exports.unlikePost = (req, res, next) => {
 	Post.findByIdAndUpdate(req.body.id, {$pull: {likes: req.user.id}})
-		.then(doc => console.log("Post unliked."))
+		.then(doc => res.sendStatus(200))
 		.catch(err => console.log(err));
 };

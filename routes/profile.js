@@ -2,6 +2,9 @@ const express = require('express');
 const router = express.Router();
 const userController = require("../controllers/userController");
 const helpers = require("../helpers");
+const multer = require("multer");
+const upload = multer();
+
 
 router.get("/loggedUser", helpers.isLogged, userController.getLoggedUser);
 
@@ -43,6 +46,6 @@ router.post("/:id/delete", helpers.isLogged, userController.deleteUser)
 router.get("/:id/delete", helpers.isLogged, (req, res) => res.render("deleteUser"))
 
 /* Search for users */
-router.post("/search", helpers.isLogged, userController.searchUsers);
+router.post("/search", helpers.isLogged, upload.single("name"), userController.searchUsers);
 
 module.exports = router;
