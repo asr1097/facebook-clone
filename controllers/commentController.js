@@ -34,6 +34,7 @@ exports.createComment = [
             user: req.user.id,
             post: req.body.postID,
             text: req.body.text,
+            date: Date.now()
         });
         if(req.body.parentCommentID) {newComment.parentComment = req.body.parentCommentID}
         if(!errors.isEmpty()) {
@@ -48,25 +49,28 @@ exports.createComment = [
     },
 
     (req, res, next) => {
-        const newNotification = new Notification({
-            user: req.body.user,
-            profileID: req.user.id,
-            date: Date.now(),
-            newCommentID: req.comment._id
-        })
-        if(req.body.parentCommentID) {
-            newNotification.parentCommentID = req.body.parentCommentID;
-            newNotification.type = "comment comment";
-        } else {
-            newNotification.postID = req.body.postID;
-            newNotification.type = "post comment"
-        }
-        newNotification.save().then(notif => {
-            if(res.io.sockets.adapter.rooms.has(req.body.user)) {
-                res.io.to(req.body.user).emit("new notification", notif);
-                res.sendStatus(200)
-            } else{res.sendStatus(200)}
-        }).catch(err => console.log(err))
+        if(req.user.id === req.comment.user._id.toString()){res.status(200).json(req.comment)}
+        else {
+            const newNotification = new Notification({
+                user: req.body.user,
+                profileID: req.user.id,
+                date: Date.now(),
+                newCommentID: req.comment._id,
+                postID: req.body.postID
+            })
+            if(req.body.parentCommentID) {
+                newNotification.parentCommentID = req.body.parentCommentID;
+                newNotification.type = "comment comment";
+            } else {
+                newNotification.type = "post comment"
+            }
+            newNotification.save().then(notif => {
+                if(res.io.sockets.adapter.rooms.has(req.body.user)) {
+                    res.io.to(req.body.user).emit("new notification", notif);
+                    res.status(200).json(req.comment)
+                } else{res.status(200).json(req.comment)}
+            }).catch(err => console.log(err))
+        };
     }
 ];
 

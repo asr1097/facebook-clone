@@ -12,7 +12,7 @@ const mongoose = require("mongoose");
 const passport = require("passport");
 const cors = require("cors");
 const fs = require("fs");
-const socketIOHandlers = require("./socketio-handlers");
+const socketIOHandlers = require("./config/socketio-handlers");
 
 const corsOptions = {
   origin: new RegExp("https://localhost:*"),

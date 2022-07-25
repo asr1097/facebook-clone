@@ -18,7 +18,7 @@ exports.getPosts = (req, res, next) => {
     User.findById(req.user.id).then(loggedUser => {
         Post.find({$or: [{user: {$in: loggedUser.friendsList}}, {user: req.user.id}]})
 			.sort([["date", "-1"]])
-			.populate(["user", "comments", "likes"])
+			.populate(["user", {path: "comments", options: {sort: {"date": "desc"}}}, "likes"])
 			.then(posts => {res.json({posts, id: req.user.id, user: req.user})})
     });
 };
