@@ -6,6 +6,7 @@ const CommentSchema = new Schema({
     post: {type: Schema.Types.ObjectId, ref: "Post"},
     text: {type: String, maxlength: 999},
     parentComment: {type: Schema.Types.ObjectId, ref: "Comment"},
+    childrenComments: [{type: Schema.Types.ObjectId, ref: "Comment"}],
     likes: [{type: Schema.Types.ObjectId, ref: "User"}],
     date: {type: Date, default: Date.now()}
 }, {toJSON: {virtuals: true}});

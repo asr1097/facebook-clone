@@ -15,18 +15,20 @@ const isSameUser = (req, res, next) => {
 
 exports.getComment = (req, res, next) => {
     Comment.findById(req.params.id)
+        .populate("user")
         .then(comment => {
-            Comment.find({parentComment: comment})
-                .then(descendersComments => res.json({comment, descendersComments}))
-                .catch(err => console.log(err));
+            Comment.find({_id: {$in: comment.childrenComments}})
+                .populate("user")
+                .sort({"date": "desc"})
+                .then(childrenComments => {
+                    res.json({comment, childrenComments})
+                })
         })
-        .catch(err => console.log(err));
 };
 
 exports.createComment = [
     body("text").isLength({max: 999}).trim().escape(),
     body("postID").exists(),
-    body("user").exists(),
 
     (req, res, next) => {
         const errors = validationResult(req)
@@ -42,8 +44,16 @@ exports.createComment = [
         } else {
             newComment.save().then(comment => {
                 req.comment = comment;
-                Post.findByIdAndUpdate(req.body.postID, {$push: {comments: comment._id}})
-                    .then(post => next())
+                if(!req.body.parentCommentID){
+                    Post.findByIdAndUpdate(req.body.postID, {$push: {comments: comment._id}})
+                        .then(post => next())
+                } else {
+                    Promise.all([
+                        Post.findByIdAndUpdate(req.body.postID, {$push: {comments: comment._id}}),
+                        Comment.findByIdAndUpdate(req.body.parentCommentID, {$push: {childrenComments: comment._id}})
+                    ])
+                        .then(post => next())
+                }
             })
         }
     },

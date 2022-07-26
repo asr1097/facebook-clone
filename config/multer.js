@@ -60,6 +60,11 @@ const multerFields = [
     {
         name: "readMessages",
         maxCount: 1
+    },
+
+    {
+        name: "parentCommentID",
+        maxCount: 1
     }
 ];
 
