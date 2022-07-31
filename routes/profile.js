@@ -29,6 +29,6 @@ router.post("/friends/remove", helpers.isLogged, userController.removeFriend);
 router.post("/:id/delete", helpers.isLogged, userController.deleteUser)
 
 /* Search for users */
-router.post("/search", helpers.isLogged, userController.searchUsers);
+router.post("/search", helpers.isLogged, upload.fields(multerFields), userController.searchUsers);
 
 module.exports = router;

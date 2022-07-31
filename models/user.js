@@ -13,6 +13,7 @@ const UserSchema = new Schema({
     dateOfBirth: {type: String},
     location: {type: String},
     profilePhoto: {type: String},
+    photos: [{type: String}],
     friendsList: [{type: Schema.Types.ObjectId, ref: "User"}],
     receivedRequests: [{type: Schema.Types.ObjectId, ref: "User"}],
     sentRequests: [{type: Schema.Types.ObjectId, ref: "User"}],
@@ -21,6 +22,12 @@ const UserSchema = new Schema({
 UserSchema.pre("save", function(next) {
     this.name.full = this.name.first + " " + this.name.last;
     return next();
+});
+
+UserSchema.pre("save", function(next) {
+    if(this.gender === "male") {this.profilePhoto = "/male.png"}
+    else{this.profilePhoto = "/female.png"};
+    next();
 });
 
 UserSchema.pre("insertMany", function(next, docs) {

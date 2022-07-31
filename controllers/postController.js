@@ -18,14 +18,26 @@ exports.getPosts = (req, res, next) => {
     User.findById(req.user.id).then(loggedUser => {
         Post.find({$or: [{user: {$in: loggedUser.friendsList}}, {user: req.user.id}]})
 			.sort([["date", "-1"]])
-			.populate(["user", {path: "comments", options: {sort: {"date": "desc"}}}, "likes"])
+			.populate([
+				"user", 
+				{path: "comments", options: {sort: {"date": "desc"}}}, 
+				{path: "comments", populate: {path: "user"}},
+				{path: "comments", populate: {path: "likes"}},
+				"likes",
+				])
 			.then(posts => {res.json({posts, id: req.user.id, user: req.user})})
     });
 };
 
 exports.getPost = (req, res, next) => {
 	Post.findById(req.params.id)
-		.populate(["user", "comments", "likes"])
+		.populate([
+			"user", 
+			"comments", 
+			"likes", 
+			{path: "comments", populate: {path: "user"}},
+			{path: "comments", populate: {path: "likes"}},
+		])
 		.then(post => {res.json(post)})
 };
 
@@ -43,9 +55,18 @@ exports.createPost = [
 				res.send("Text field must have maximum of 999 characters.")
 		} else {
 				newPost.save()
-					.then(doc => res.sendStatus(200))
+					.then(doc => {
+						if(req.image){next()}
+						else {res.sendStatus(200)}
+					})
 					.catch(err => console.log(err))
 		}
+	},
+
+	(req, res, next) => {
+		User.findByIdAndUpdate(req.user.id, {$push: {images: req.image}})
+			.then(user => res.sendStatus(200))
+			.catch(err => res.json(err))
 	}
 ];
 

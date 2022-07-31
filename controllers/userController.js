@@ -6,8 +6,20 @@ const helpers = require("../helpers");
 
 /* Get user profile*/
 exports.getUser = (req, res, next) => {
-    User.findById(req.params.id)
-        .then(user => res.json(user))
+    Promise.all([
+        User.findById(req.params.id)
+            .populate("friendsList"),
+
+        Post.find({user: req.params.id})
+            .sort({"date": "desc"})
+            .populate([
+                "likes", 
+                "comments", 
+                {path: "comments", populate: {path: "user"}},
+                {path: "comments", populate: {path: "likes"}},
+            ])
+    ])
+        .then(response => res.status(200).json(response))
         .catch(err => console.log(err));
 };
 
