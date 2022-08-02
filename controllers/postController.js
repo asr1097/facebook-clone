@@ -49,24 +49,15 @@ exports.createPost = [
 		const newPost = new Post({
 			user: req.user.id,
 			text: req.body.text,
-			image: req.image ? `${req.user.id}/${req.image}` : ""
+			image: req.image ? `${req.user.id}/${req.image}` : null
 		});
 		if(!errors.isEmpty()) {
 				res.send("Text field must have maximum of 999 characters.")
 		} else {
 				newPost.save()
-					.then(doc => {
-						if(req.image){next()}
-						else {res.sendStatus(200)}
-					})
+					.then(doc => {res.sendStatus(200)})
 					.catch(err => console.log(err))
 		}
-	},
-
-	(req, res, next) => {
-		User.findByIdAndUpdate(req.user.id, {$push: {images: req.image}})
-			.then(user => res.sendStatus(200))
-			.catch(err => res.json(err))
 	}
 ];
 

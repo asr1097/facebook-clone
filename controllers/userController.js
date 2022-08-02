@@ -14,7 +14,8 @@ exports.getUser = (req, res, next) => {
             .sort({"date": "desc"})
             .populate([
                 "likes", 
-                "comments", 
+                "comments",
+                "user", 
                 {path: "comments", populate: {path: "user"}},
                 {path: "comments", populate: {path: "likes"}},
             ])
@@ -111,9 +112,28 @@ exports.deleteUser = (req, res, next) => {
     
 };
 
+exports.getPhotos = [
+
+    helpers.areFriends,
+
+    (req, res, next) => {
+        Post.find({$and: [{user: req.params.id, image: {$exists: true}}]})
+            .sort({"date": "desc"})
+            .populate([
+                    "likes", 
+                    "comments",
+                    "user", 
+                    {path: "comments", populate: {path: "user"}},
+                    {path: "comments", populate: {path: "likes"}},
+                ])
+            .then(photos => res.status(200).json(photos))
+            .catch(err => console.log(err))
+    }
+]
+
 exports.searchUsers = (req, res, next) => {
     User.find({"name.full": {$regex: req.body.name, $options: "i"}})
         .then(users => {res.json(users)})
         .catch(err => res.json(err))
-}
+};
 

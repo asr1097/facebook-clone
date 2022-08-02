@@ -13,7 +13,6 @@ const UserSchema = new Schema({
     dateOfBirth: {type: String},
     location: {type: String},
     profilePhoto: {type: String},
-    photos: [{type: String}],
     friendsList: [{type: Schema.Types.ObjectId, ref: "User"}],
     receivedRequests: [{type: Schema.Types.ObjectId, ref: "User"}],
     sentRequests: [{type: Schema.Types.ObjectId, ref: "User"}],
