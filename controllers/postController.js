@@ -20,9 +20,9 @@ exports.getPosts = (req, res, next) => {
 			.sort([["date", "-1"]])
 			.populate([
 				"user", 
-				{path: "comments", options: {sort: {"date": "desc"}}}, 
-				{path: "comments", populate: {path: "user"}},
-				{path: "comments", populate: {path: "likes"}},
+				{path: "directComments", options: {sort: {"date": "desc"}}}, 
+				{path: "directComments", populate: {path: "user"}},
+				{path: "directComments", populate: {path: "likes"}},
 				"likes",
 				])
 			.then(posts => {res.json({posts, id: req.user.id, user: req.user})})
@@ -33,10 +33,10 @@ exports.getPost = (req, res, next) => {
 	Post.findById(req.params.id)
 		.populate([
 			"user", 
-			"comments", 
+			"directComments", 
 			"likes", 
-			{path: "comments", populate: {path: "user"}},
-			{path: "comments", populate: {path: "likes"}},
+			{path: "directComments", populate: {path: "user"}},
+			{path: "directComments", populate: {path: "likes"}},
 		])
 		.then(post => {res.json(post)})
 };
@@ -49,13 +49,18 @@ exports.createPost = [
 		const newPost = new Post({
 			user: req.user.id,
 			text: req.body.text,
-			image: req.image ? `${req.user.id}/${req.image}` : null
+			image: req.image ? `${req.user.id}/${req.image}` : null,
+			date: Date.now()
 		});
 		if(!errors.isEmpty()) {
 				res.send("Text field must have maximum of 999 characters.")
 		} else {
 				newPost.save()
-					.then(doc => {res.sendStatus(200)})
+					.then(post => {
+						post.populate("user").then(populatedPost => {
+							res.status(200).json(populatedPost)
+						}).catch(err => console.log(err))
+					})
 					.catch(err => console.log(err))
 		}
 	}

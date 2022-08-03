@@ -7,6 +7,7 @@ const PostSchema = new Schema({
     image: {type: String},
     likes: [{type: Schema.Types.ObjectId, ref: "User"}],
     comments: [{type: Schema.Types.ObjectId, ref: "Comment", default: []}],
+    directComments: [{type: Schema.Types.ObjectId, ref: "Comment", default: []}],
     date: {type: Date, default: Date.now()}
 }, {toJSON: {virtuals: true}});
 

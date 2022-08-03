@@ -47,7 +47,7 @@ exports.createComment = [
             newComment.save().then(comment => {
                 req.comment = comment;
                 if(!req.body.parentCommentID){
-                    Post.findByIdAndUpdate(req.body.postID, {$push: {comments: comment._id}})
+                    Post.findByIdAndUpdate(req.body.postID, {$push: {comments: comment._id, directComments: comment._id}})
                         .then(post => next())
                 } else {
                     Promise.all([
@@ -61,7 +61,11 @@ exports.createComment = [
     },
 
     (req, res, next) => {
-        if(req.user.id === req.body.user){res.status(200).json(req.comment)}
+        if(req.user.id === req.body.user){
+            req.comment.populate("user").then(populatedComment => {
+                res.status(200).json(populatedComment)
+            })
+        }
         else {
             const newNotification = new Notification({
                 user: req.body.user,
@@ -77,12 +81,15 @@ exports.createComment = [
                 newNotification.type = "post comment"
             }
             newNotification.save().then(notif => {
-                notif.populate(["user", "profileID", "newCommentID", "postID", "parentCommentID"])
-                    .then(populatedNotif => {
+                Promise.all([
+                    notif.populate(["user", "profileID", "newCommentID", "postID", "parentCommentID"]),
+                    req.comment.populate("user")
+                ])
+                    .then(response => {
                         if(res.io.sockets.adapter.rooms.has(req.body.user)) {
-                            res.io.to(req.body.user).emit("new notification", populatedNotif);
-                            res.status(200).json(req.comment)
-                        } else{res.status(200).json(req.comment)}
+                            res.io.to(req.body.user).emit("new notification", response[0]);
+                            res.status(200).json(response[1])
+                        } else{res.status(200).json(response[1])}
                     })
                     .catch(err => console.log(err))
             }).catch(err => console.log(err))
@@ -126,7 +133,7 @@ exports.deleteComment = [
             };          
         }
         Promise.all([
-            Post.findByIdAndUpdate(req.body.postID, {$pull: {comments: {$in: commentsToDelete}}}),
+            Post.findByIdAndUpdate(req.body.postID, {$pull: {comments: {$in: commentsToDelete}, directComments: {$in: commentsToDelete}}}),
             
             Comment.deleteMany({_id: {$in: commentsToDelete}})
             ])

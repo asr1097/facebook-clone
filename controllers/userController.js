@@ -14,10 +14,10 @@ exports.getUser = (req, res, next) => {
             .sort({"date": "desc"})
             .populate([
                 "likes", 
-                "comments",
+                "directComments",
                 "user", 
-                {path: "comments", populate: {path: "user"}},
-                {path: "comments", populate: {path: "likes"}},
+                {path: "directComments", populate: {path: "user"}},
+                {path: "directComments", populate: {path: "likes"}},
             ])
     ])
         .then(response => res.status(200).json(response))
@@ -121,10 +121,10 @@ exports.getPhotos = [
             .sort({"date": "desc"})
             .populate([
                     "likes", 
-                    "comments",
+                    "directComments",
                     "user", 
-                    {path: "comments", populate: {path: "user"}},
-                    {path: "comments", populate: {path: "likes"}},
+                    {path: "directComments", populate: {path: "user"}},
+                    {path: "directComments", populate: {path: "likes"}},
                 ])
             .then(photos => res.status(200).json(photos))
             .catch(err => console.log(err))
