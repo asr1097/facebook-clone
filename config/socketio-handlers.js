@@ -23,25 +23,28 @@ module.exports = (io) => {
         
         io.to(socket.userID).emit("activeUsers", activeSockets);
 
-        socket.broadcast.emit("new connection", socket.userID);
+        socket.broadcast.emit("new connection", io.loggedUser);
       
         socket.on("message", (msg) => {
             let newMessage = new Message({
               from: msg.from,
               to: msg.to,
-              content: {
-                  text: msg.content.text,
-                  date: msg.content.date
-                  
-              }});
+              text: msg.content.text,
+              date: msg.content.date
+            });
             if(io.sockets.adapter.rooms.has(msg.to)){
                 newMessage.save().then(savedMsg => {
-                    io.to(msg.to).to(socket.id).emit("new message", savedMsg);
+                  savedMsg.populate(["from", "to"]).then(popMsg => {
+                    io.to(msg.to).to(socket.id).emit("new message", popMsg)
+                  }).catch(err => console.log(err))
                 }).catch(err => console.log(err));
             } else {
                 newMessage.save().then(savedMsg => {
-                    io.to(socket.id).emit("new message", savedMsg);
-            })};
+                  savedMsg.populate(["from", "to"]).then(popMsg => {
+                    io.to(socket.id).emit("new message", popMsg);
+                  }).catch(err => console.log(err))
+                }).catch(err => console.log(err))
+            };
         });
       
         socket.on("disconnect", () => {

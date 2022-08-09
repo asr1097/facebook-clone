@@ -25,7 +25,11 @@ exports.getUser = (req, res, next) => {
 };
 
 exports.getLoggedUser = (req, res, next) => {
-    res.json(req.user)
+    User.findById(req.user.id)
+        .populate(["friendsList", "receivedRequests"])
+        .then(populatedFL => {
+            res.json({user: req.user, populatedFL: populatedFL})
+        });
 };
 
 /* Send friend request */

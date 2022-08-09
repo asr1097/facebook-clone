@@ -51,15 +51,11 @@ io.use((socket, next) => {
   next();
 })
 
-socketIOHandlers(io);
-
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'ejs');
 
-app.use((req, res, next) => {
-  res.io = io;
-  next();
-})
+
+
 app.use(cors(corsOptions));
 app.use(helmet({
   crossOriginResourcePolicy: {policy: "cross-origin"},
@@ -78,6 +74,13 @@ app.use(cookieSession({
 
 app.use(passport.initialize())
 app.use(passport.session())
+
+app.use((req, res, next) => {
+  res.io = io;
+  io.loggedUser = req.user;
+  next();
+})
+socketIOHandlers(io);
 
 app.use("/", indexRoute);
 app.use("/auth", authRoute);
