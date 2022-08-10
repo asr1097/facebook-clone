@@ -15,7 +15,7 @@ const fs = require("fs");
 const socketIOHandlers = require("./config/socketio-handlers");
 
 const corsOptions = {
-  origin: new RegExp("https://localhost:*"),
+  origin: new RegExp(`${process.env.CLIENT_URL}:*`),
   credentials: true,
   exposedHeaders: ["Cross-Origin-Resource-Policy"]
 }
@@ -42,7 +42,7 @@ const server = require("https").createServer({
 
 const io = require("socket.io")(server, {
   cors: {
-    origin: new RegExp("localhost:*")
+    origin: new RegExp(`${process.env.CLIENT_URL}`)
   }
 });
 
@@ -50,11 +50,6 @@ io.use((socket, next) => {
   socket.userID = socket.handshake.auth.socketID;
   next();
 })
-
-app.set('views', path.join(__dirname, 'views'));
-app.set('view engine', 'ejs');
-
-
 
 app.use(cors(corsOptions));
 app.use(helmet({
@@ -93,7 +88,7 @@ app.get("/logout", (req, res) => {
     req.session = null;
     res.clearCookie("loggedIn");
     req.logout();
-    res.redirect("https://localhost:3001/facebook-clone-client");
+    res.redirect(`${process.env.CLIENT_URL}/`);
   }
 );
 
