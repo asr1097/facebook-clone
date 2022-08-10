@@ -14,7 +14,7 @@ passport.deserializeUser((id, done) => {
 passport.use(new FacebookStrategy({
     clientID: process.env.FB_CLIENTID,
     clientSecret: process.env.FB_SECRET,
-    callbackURL: "https://localhost:3000/auth/facebook/redirect",
+    callbackURL: process.env.FB_CB_URL,
     profileFields: ["id", "email", "birthday", "gender", "location", "name"]
 }, (accessToken, refreshToken, profile, cb) => {
     User.findOne({"fbID": profile.id}).then(user => {
