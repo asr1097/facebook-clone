@@ -46,6 +46,20 @@ module.exports = (io) => {
                 }).catch(err => console.log(err))
             };
         });
+
+        socket.on("typing", (info) => {
+          console.log(info.from + " is typing")
+          if(io.sockets.adapter.rooms.has(info.to) && (info.to !== info.from)) {
+            io.to(info.to).emit("typing", info.from)
+          }
+        });
+
+        socket.on("stopped typing", (info) => {
+          console.log(info.from + " stopped typing")
+          if(io.sockets.adapter.rooms.has(info.to) && (info.to !== info.from)) {
+            io.to(info.to).emit("stopped typing", info.from)
+          }
+        });
       
         socket.on("disconnect", () => {
           const indexOfSocket = activeSockets.findIndex(activeSocket => 
