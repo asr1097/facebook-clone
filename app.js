@@ -17,7 +17,8 @@ const socketIOHandlers = require("./config/socketio-handlers");
 const corsOptions = {
   origin: new RegExp(`${process.env.CLIENT_ORIGIN}`),
   credentials: true,
-  exposedHeaders: ["Cross-Origin-Resource-Policy"]
+  allowedHeaders: ["Cross-Origin-Resource-Policy", "Access-Control-Allow-Origin"],
+  exposedHeaders: ["Cross-Origin-Resource-Policy", "Access-Control-Allow-Origin"]
 }
 
 const mongoDB = process.env.MONGODB_URI;
