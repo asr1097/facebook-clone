@@ -15,7 +15,7 @@ const fs = require("fs");
 const socketIOHandlers = require("./config/socketio-handlers");
 
 const corsOptions = {
-  origin: new RegExp(`${process.env.CLIENT_URL}:*`),
+  origin: new RegExp(`${process.env.CLIENT_ORIGIN}`),
   credentials: true,
   exposedHeaders: ["Cross-Origin-Resource-Policy"]
 }
@@ -39,7 +39,7 @@ const server = require("http").createServer(app);
 
 const io = require("socket.io")(server, {
   cors: {
-    origin: new RegExp(`${process.env.CLIENT_URL}`)
+    origin: new RegExp(`${process.env.CLIENT_ORIGIN}`)
   }
 });
 
