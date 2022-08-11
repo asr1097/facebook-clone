@@ -35,10 +35,7 @@ const notificationsRoute = require("./routes/notifications");
 
 const app = express();
 
-const server = require("https").createServer({
-  key: fs.readFileSync("key.pem"),
-  cert: fs.readFileSync("cert.pem"),
-}, app);
+const server = require("http").createServer(app);
 
 const io = require("socket.io")(server, {
   cors: {
