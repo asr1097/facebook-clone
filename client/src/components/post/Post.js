@@ -51,12 +51,6 @@ const Post = () => {
 
         if(!post) {fetchPost()};
 
-        return () => {
-            setPost();
-            setRenderLevel(1);
-            setCommentsToRender();
-        };
-
     }, [params.id, renderLevel, post]);
 
     useEffect(() => {
