@@ -89,7 +89,7 @@ app.get("/logout", (req, res) => {
     res.redirect(`${process.env.CLIENT_URL}/`);
   }
 );
-app.use("*", (req, res) => {
+app.use("/client", (req, res) => {
   res.sendFile(path.join(__dirname+'/client/build/index.html'));
 });
 
