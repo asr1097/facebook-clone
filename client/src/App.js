@@ -14,7 +14,7 @@ import { Photos } from "./components/post/Photos";
 import { FriendRequests } from "./components/profile/FriendRequests";
 
 
-const socket = io("https://localhost:3000/", {
+const socket = io(`https://pacific-hamlet-40360.herokuapp.com`, {
   autoConnect: false
 });
 
