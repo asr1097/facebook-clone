@@ -32,7 +32,7 @@
     "nodemon": "^2.0.15"
   },
   "engines" : { 
-    "npm" : "7.x",
+    "npm" : "8.x",
     "node" : "14.x"
   }
 }
