@@ -76,7 +76,7 @@ app.use((req, res, next) => {
 })
 socketIOHandlers(io);
 
-app.use("/", indexRoute);
+app.use("/index", indexRoute);
 app.use("/auth", authRoute);
 app.use("/profile", profileRoute);
 app.use("/posts", postsRoute);
@@ -90,7 +90,7 @@ app.get("/logout", (req, res) => {
     res.redirect(`${process.env.CLIENT_URL}/`);
   }
 );
-app.use("/client", (req, res) => {
+app.use("/*", (req, res) => {
   res.sendFile(path.join(__dirname+'/client/build/index.html'));
 });
 
