@@ -54,7 +54,7 @@ function App() {
   /* Fetch user data */
   useEffect(() => {
     const fetchUser = async() => {
-      const fetchedUserData = await fetch(`${process.env.REACT_APP_SERVER_URL}/profile/loggedUser`, {
+      const fetchedUserData = await fetch(`/profile/loggedUser`, {
         credentials: "include",
         mode: "cors"  
       })
@@ -89,7 +89,7 @@ function App() {
       if(notifs.length) {
         let formData = new FormData()
         formData.append("notifs", notifs);
-        let statusCode = await fetch(`${process.env.REACT_APP_SERVER_URL}/notifications/read`, {
+        let statusCode = await fetch(`/notifications/read`, {
           mode: "cors",
           credentials: "include",
           method: "post",
@@ -115,7 +115,7 @@ function App() {
   /* Fetch notifications */
   useEffect(() => {
     const fetchNotifications = async() => {
-      const fetchedNotifsData = await fetch(`${process.env.REACT_APP_SERVER_URL}/notifications`, {
+      const fetchedNotifsData = await fetch(`/notifications`, {
         credentials: "include",
         mode: "cors"
       })
@@ -143,7 +143,7 @@ function App() {
   useEffect(() => {
 
     const fetchMessages = async() => {
-      const fetchedMessagesData = await fetch(`${process.env.REACT_APP_SERVER_URL}/messages`, {
+      const fetchedMessagesData = await fetch(`/messages`, {
         credentials: "include",
         mode: "cors" 
       })
@@ -230,7 +230,7 @@ function App() {
      let formData = new FormData();
      formData.append("readMessages", readMessages);
      formData.append("friend", friend);
-     fetch(`${process.env.REACT_APP_SERVER_URL}/messages/read`, {
+     fetch(`/messages/read`, {
        credentials: "include",
        method: "post",
        mode: "cors",

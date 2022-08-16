@@ -20,7 +20,7 @@ const LikePost = ({ postID, likes, index, likePost, unlikePost, singlePostLiked,
     const submitAction = async(ev) => {
         let formData = new FormData();
         formData.append("id", postID);
-        let statusCode = await fetch(`${process.env.REACT_APP_SERVER_URL}/posts/${postID}/${action}`, {
+        let statusCode = await fetch(`""/posts/${postID}/${action}`, {
             mode: "cors",
             credentials: "include",
             method: "post",

@@ -9,7 +9,7 @@ const FriendRequests = ({ requests }) => {
                     return (
                         <div>
                             <img 
-                                src={`${process.env.REACT_APP_SERVER_URL}/images/${profile.profilePhoto}`} 
+                                src={`""/images/${profile.profilePhoto}`} 
                                 alt="Profile"
                             />
                             <p>{profile.name.full}</p>

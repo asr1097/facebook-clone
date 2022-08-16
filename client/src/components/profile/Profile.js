@@ -39,7 +39,7 @@ const Profile = () => {
 
     useEffect(() => {
         const fetchUser = async() => {
-            let response = await fetch(`${process.env.REACT_APP_SERVER_URL}/profile/${params.id}`, {
+            let response = await fetch(`""/profile/${params.id}`, {
                 mode: "cors",
                 credentials: "include"
             });
@@ -66,7 +66,7 @@ const Profile = () => {
     if(profile && postsToRender) {
         return (
             <div>
-                <img src={`${process.env.REACT_APP_SERVER_URL}/images/${profile.profilePhoto}`} alt="Profile"/>
+                <img src={`""/images/${profile.profilePhoto}`} alt="Profile"/>
                 <p>{profile.name.full}</p>
                 <p>{profile.locaton}</p>
                 <p>{profile.dateOfBirth}</p>
