@@ -89,6 +89,9 @@ app.get("/logout", (req, res) => {
     res.redirect(`${process.env.CLIENT_URL}/`);
   }
 );
+app.use("*", (req, res) => {
+  res.sendFile(path.join(__dirname+'/client/build/index.html'));
+});
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
