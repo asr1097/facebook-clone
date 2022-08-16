@@ -30,5 +30,9 @@
   "devDependencies": {
     "@faker-js/faker": "^6.1.2",
     "nodemon": "^2.0.15"
+  },
+  "engines" : { 
+    "npm" : ">=7.0.0",
+    "node" : ">=16.0.0"
   }
 }
