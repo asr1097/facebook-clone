@@ -14,7 +14,7 @@ const PostCommentForm = ({ postID, user, index, pushNewComment, singlePostPushCo
         formData.append("postID", postID);
         formData.append("user", user);
         formData.append("text", text);
-        let response = await fetch(`""/posts/${postID}/comments/new`, {
+        let response = await fetch(`/posts/${postID}/comments/new`, {
             mode: "cors",
             credentials: "include",
             method: "post",
