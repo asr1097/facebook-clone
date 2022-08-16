@@ -39,7 +39,7 @@ const Profile = () => {
 
     useEffect(() => {
         const fetchUser = async() => {
-            let response = await fetch(`/profile/${params.id}`, {
+            let response = await fetch(`http://localhost:3000/profile/${params.id}`, {
                 mode: "cors",
                 credentials: "include"
             });
@@ -66,7 +66,7 @@ const Profile = () => {
     if(profile && postsToRender) {
         return (
             <div>
-                <img src={`/images/${profile.profilePhoto}`} alt="Profile"/>
+                <img src={`http://localhost:3000/images/${profile.profilePhoto}`} alt="Profile"/>
                 <p>{profile.name.full}</p>
                 <p>{profile.locaton}</p>
                 <p>{profile.dateOfBirth}</p>

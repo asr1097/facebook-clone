@@ -121,7 +121,7 @@ exports.getPhotos = [
     helpers.areFriends,
 
     (req, res, next) => {
-        Post.find({$and: [{user: req.params.id, image: {$exists: true}}]})
+        Post.find({$and: [{user: req.params.id}, {image: {$exists: true, $ne: null}}]})
             .sort({"date": "desc"})
             .populate([
                     "likes", 
@@ -130,8 +130,13 @@ exports.getPhotos = [
                     {path: "directComments", populate: {path: "user"}},
                     {path: "directComments", populate: {path: "likes"}},
                 ])
-            .then(photos => res.status(200).json(photos))
-            .catch(err => console.log(err))
+            .then(photos => {
+                console.log(photos)
+                res.status(200).json(photos)})
+            .catch(err => {
+                console.log(err)
+                res.json(err)
+            })
     }
 ]
 

@@ -15,8 +15,13 @@ const isSameUser = (req, res, next) => {
 
 exports.getComment = (req, res, next) => {
     Comment.findById(req.params.id)
-        .populate("user")
-        .populate("likes")
+        .populate([
+            "user", 
+            "likes", 
+            "post", 
+            {path: "post", populate: {path: "user"}},
+            {path: "post", populate: {path: "likes"}}
+        ])
         .then(comment => {
             Comment.find({_id: {$in: comment.childrenComments}})
                 .populate(["user", "likes"])

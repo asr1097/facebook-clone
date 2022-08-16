@@ -21,7 +21,7 @@ const PostList = ({ post, index, likePost, unlikePost, pushNewComment }) => {
     if(post && commentsToRender) {
         return (
             <div key={post._id}>
-                {post.image ? <img alt="Post" src={`/images/` + post.image}></img> 
+                {post.image ? <img alt="Post" src={`http://localhost:3000/images/` + post.image}></img> 
                 : null}
                 <p>{post.text}</p>
                 <Details 

@@ -1,5 +1,6 @@
 import { useState, useContext } from "react";
 import { UserContext } from "../../App";
+import { DateFormat } from "../Date";
 
 const Message = ({ msg }) => {
     const [showDetails, setShowDetails] = useState(false);
@@ -13,7 +14,7 @@ const Message = ({ msg }) => {
 
     return (
         <div onClick={detailsSwitch} style={style}>
-            {showDetails ? <span>{msg.date}</span> : null}
+            {showDetails ? <DateFormat date={msg.date} /> : null}
             <p>{msg.text}</p>
             {showDetails && msg.read && (msg.from._id === user._id) ? 
                 <span>Seen</span> 

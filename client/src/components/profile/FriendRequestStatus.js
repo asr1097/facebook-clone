@@ -15,7 +15,7 @@ const FriendRequestStatus = ({profile}) => {
     const sendRequest = async() => {
         let formData = new FormData();
         formData.append("profileID", profile._id)
-        const response = await fetch(`/profile/friends/add`, {
+        const response = await fetch(`http://localhost:3000/profile/friends/add`, {
             method: "post",
             body: formData,
             credentials: "include",
@@ -27,7 +27,7 @@ const FriendRequestStatus = ({profile}) => {
     const cancelRequest = async() => {
         let formData = new FormData();
         formData.append("profileID", profile._id)
-        const response = await fetch(`/profile/friends/cancel`, {
+        const response = await fetch(`http://localhost:3000/profile/friends/cancel`, {
             method: "post",
             body: formData,
             credentials: "include",
@@ -39,7 +39,7 @@ const FriendRequestStatus = ({profile}) => {
     const rejectRequest = async() => {
         let formData = new FormData();
         formData.append("profileID", profile._id)
-        const response = await fetch(`/profile/friends/reject`, {
+        const response = await fetch(`http://localhost:3000/profile/friends/reject`, {
             method: "post",
             body: formData,
             credentials: "include",
@@ -51,7 +51,7 @@ const FriendRequestStatus = ({profile}) => {
     const acceptRequest = async() => {
         let formData = new FormData();
         formData.append("profileID", profile._id)
-        const response = await fetch(`/profile/friends/accept`, {
+        const response = await fetch(`http://localhost:3000/profile/friends/accept`, {
             method: "post",
             body: formData,
             credentials: "include",

@@ -14,7 +14,7 @@ import { Photos } from "./components/post/Photos";
 import { FriendRequests } from "./components/profile/FriendRequests";
 
 
-const socket = io(`https://pacific-hamlet-40360.herokuapp.com`, {
+const socket = io(`http://localhost:3000`, {
   autoConnect: false
 });
 
@@ -54,7 +54,7 @@ function App() {
   /* Fetch user data */
   useEffect(() => {
     const fetchUser = async() => {
-      const fetchedUserData = await fetch(`/profile/loggedUser`, {
+      const fetchedUserData = await fetch(`http://localhost:3000/profile/loggedUser`, {
         credentials: "include",
         mode: "cors"  
       })
@@ -89,7 +89,7 @@ function App() {
       if(notifs.length) {
         let formData = new FormData()
         formData.append("notifs", notifs);
-        let statusCode = await fetch(`/notifications/read`, {
+        let statusCode = await fetch(`http://localhost:3000/notifications/read`, {
           mode: "cors",
           credentials: "include",
           method: "post",
@@ -115,7 +115,7 @@ function App() {
   /* Fetch notifications */
   useEffect(() => {
     const fetchNotifications = async() => {
-      const fetchedNotifsData = await fetch(`/notifications`, {
+      const fetchedNotifsData = await fetch(`http://localhost:3000/notifications`, {
         credentials: "include",
         mode: "cors"
       })
@@ -143,7 +143,7 @@ function App() {
   useEffect(() => {
 
     const fetchMessages = async() => {
-      const fetchedMessagesData = await fetch(`/messages`, {
+      const fetchedMessagesData = await fetch(`http://localhost:3000/messages`, {
         credentials: "include",
         mode: "cors" 
       })
@@ -230,7 +230,7 @@ function App() {
      let formData = new FormData();
      formData.append("readMessages", readMessages);
      formData.append("friend", friend);
-     fetch(`/messages/read`, {
+     fetch(`http://localhost:3000/messages/read`, {
        credentials: "include",
        method: "post",
        mode: "cors",

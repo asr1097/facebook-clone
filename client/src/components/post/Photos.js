@@ -9,7 +9,7 @@ const Photos = () => {
 
     useEffect(() => {
         const fetchPosts = async() => {
-            let response = await fetch(`/profile/${params.id}/photos`, {
+            let response = await fetch(`http://localhost:3000/profile/${params.id}/photos`, {
                 mode: "cors",
                 credentials: "include"
             });
@@ -19,7 +19,7 @@ const Photos = () => {
             }
         }
 
-        if(!posts) {fetchPosts()};
+        if(!posts && params.id) {fetchPosts()};
 
     }, [posts, params.id])
 

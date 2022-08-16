@@ -2,7 +2,7 @@ const Photo = ({ post }) => {
     
     return (
         <div>
-            <img src={`images/${post.image}`} alt="Post"/>
+            <img src={`http://localhost:3000/images/${post.image}`} alt="Post"/>
         </div>
     )
 };

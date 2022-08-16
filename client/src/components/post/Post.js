@@ -38,9 +38,11 @@ const Post = () => {
         setPost(newPost);
     };
 
+    
+
     useEffect(() => {
         const fetchPost = async() => {
-            let response = await fetch(`/posts/${params.id}`, {
+            let response = await fetch(`http://localhost:3000/posts/${params.id}`, {
                 mode: "cors",
                 credentials: "include"
             });
@@ -60,7 +62,7 @@ const Post = () => {
     if(post) {
         return (
             <div key={post._id}>
-                {post.image ? <img alt="Post" src={`/images/` + post.image}></img> 
+                {post.image ? <img alt="Post" src={`http://localhost:3000/images/` + post.image}></img> 
                 : null}
                 <p>{post.text}</p>
                 <Details 

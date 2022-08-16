@@ -16,9 +16,11 @@ exports.isLogged = (req, res, next) => {
 
 exports.areFriends = (req, res, next) => {
    if(req.user.id === req.params.id) {next()}
-   let areFriends = req.user.friendsList.includes(req.params.id);
-   if(areFriends) {next();}
-   else {throw new Error("You are not friends with this profile.")}
+   else{
+       let areFriends = req.user.friendsList.includes(req.params.id);
+       if(areFriends) {next();}
+       else {throw new Error("You are not friends with this profile.")}
+   }
 }
 
 exports.findChildComments = (parentCommentID) => {

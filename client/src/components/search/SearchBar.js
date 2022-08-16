@@ -11,7 +11,7 @@ const SearchBar = (props) => {
         ev.preventDefault();
         let formData = new FormData();
         formData.append("name", searchInput)
-        const rawData = await fetch(`/profile/search`, {
+        const rawData = await fetch(`http://localhost:3000/profile/search`, {
           credentials: "include",
           mode: "cors",
           method: "post",
