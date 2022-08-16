@@ -9,7 +9,7 @@ const Photos = () => {
 
     useEffect(() => {
         const fetchPosts = async() => {
-            let response = await fetch(`""/profile/${params.id}/photos`, {
+            let response = await fetch(`/profile/${params.id}/photos`, {
                 mode: "cors",
                 credentials: "include"
             });

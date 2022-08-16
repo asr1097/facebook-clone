@@ -38,7 +38,7 @@ const IndexPage = ({loggedIn, user}) => {
 
     useEffect(() => {
         if(loggedIn){
-          fetch(`""/`, {
+          fetch(`/`, {
             credentials: "include",
             mode: "cors"  
           })

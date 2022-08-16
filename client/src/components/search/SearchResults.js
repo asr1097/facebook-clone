@@ -12,7 +12,7 @@ const SearchResults = ({ users, setsearchResult }) => {
                         <div key={profile._id}>
                             <Link to={`../${profile.url}`}>
                                 <img 
-                                    src={`""/images/${profile.profilePhoto}`} 
+                                    src={`/images/${profile.profilePhoto}`} 
                                     alt={"Profile"}
                                 />
                             </Link>
