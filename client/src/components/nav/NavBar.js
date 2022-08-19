@@ -5,8 +5,8 @@ const NavBar = ({ loggedIn, setsearchResult, unreadNotifsCount, unreadMsgsGlobal
     
         return (
             <nav>
-                {!loggedIn ? <a href={`http://localhost:3000/auth/facebook`}>Log in</a> 
-                :<a href={`http://localhost:3000/logout`}>Log out</a>}
+                {!loggedIn ? <a href={`${process.env.REACT_APP_SERVER_URL}/auth/facebook`}>Log in</a> 
+                :<a href={`${process.env.REACT_APP_SERVER_URL}/logout`}>Log out</a>}
                 {user ?
                 <div>
                   <SearchBar setsearchResult={setsearchResult}/>

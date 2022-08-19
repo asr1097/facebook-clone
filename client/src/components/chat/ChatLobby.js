@@ -1,6 +1,10 @@
 import { ChatFriendTile } from "./ChatFriendTile";
+import { FriendsList } from "./FriendsList";
+import { useState } from "react";
 
 const ChatLobby = ({ activeUsers, messages, renderChatroom }) => {
+
+    const [showFRList, setShowFRList] = useState(false);
 
     const renderComp = () => {
 
@@ -14,17 +18,22 @@ const ChatLobby = ({ activeUsers, messages, renderChatroom }) => {
         });
 
         return (
-            sortedMessages.map((sender, index) => {
-                return (
-                    <ChatFriendTile
-                        key={index} 
-                        sender={sender} 
-                        activeUsers={activeUsers}
-                        messages={messages}
-                        renderChatroom={renderChatroom}
-                    />  
-                )
-            })  
+            <div>
+                {sortedMessages.map((sender, index) => {
+                    return (
+                        <ChatFriendTile
+                            key={index} 
+                            sender={sender} 
+                            activeUsers={activeUsers}
+                            messages={messages}
+                            renderChatroom={renderChatroom}
+                        />  
+                    )
+                })}
+                <button onClick={() => setShowFRList(true)}>Send new message</button>
+                {showFRList ? <FriendsList setShowFRList={setShowFRList} activeUsers={activeUsers} />
+                : null} 
+            </div>
         )
     };
 

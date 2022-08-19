@@ -12,7 +12,7 @@ const LikeList = ({ likes }) => {
                     return (
                         <div key={user._id}>
                             <Link to={`../${user.url}`}>
-                                <img src={`http://localhost:3000/images/${user.profilePhoto}`} alt="Profile"/>
+                                <img src={`${process.env.REACT_APP_SERVER_URL}/images/${user.profilePhoto}`} alt="Profile"/>
                             </Link>
                             <Link to={`../${user.url}`}>{user.name.full}</Link>
                             <FriendRequestStatus profile={user} />

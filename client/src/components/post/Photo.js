@@ -2,7 +2,7 @@ const Photo = ({ post }) => {
     
     return (
         <div>
-            <img src={`http://localhost:3000/images/${post.image}`} alt="Post"/>
+            <img src={`${process.env.REACT_APP_SERVER_URL}/images/${post.image}`} alt="Post"/>
         </div>
     )
 };

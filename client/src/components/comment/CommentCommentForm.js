@@ -21,7 +21,7 @@ const CommentCommentForm = ({ commentOwner, postID, parentCommentID }) => {
         formData.append("parentCommentID", parentCommentID);
         formData.append("postID", postID);
         formData.append("user", commentOwner);
-        let response = await fetch(`http://localhost:3000https://pacific-hamlet-40360.herokuapp.com/comments/${parentCommentID}/new`, {
+        let response = await fetch(`${process.env.REACT_APP_SERVER_URL}https://pacific-hamlet-40360.herokuapp.com/comments/${parentCommentID}/new`, {
             mode: "cors",
             credentials: "include",
             method: "post",

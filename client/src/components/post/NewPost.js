@@ -9,7 +9,7 @@ const NewPost = ({ pushPost }) => {
         let formData = new FormData();
         formData.append("text", text);
         formData.append("imageField", file);
-        let response = await fetch(`http://localhost:3000/posts/new`, {
+        let response = await fetch(`${process.env.REACT_APP_SERVER_URL}/posts/new`, {
             mode: "cors",
             credentials: "include",
             method: "post",

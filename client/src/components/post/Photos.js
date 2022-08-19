@@ -9,7 +9,7 @@ const Photos = () => {
 
     useEffect(() => {
         const fetchPosts = async() => {
-            let response = await fetch(`http://localhost:3000/profile/${params.id}/photos`, {
+            let response = await fetch(`${process.env.REACT_APP_SERVER_URL}/profile/${params.id}/photos`, {
                 mode: "cors",
                 credentials: "include"
             });

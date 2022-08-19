@@ -37,7 +37,7 @@ const LikeComment = ({ id, likes }) => {
     const submitAction = async(ev) => {
         let formData = new FormData();
         formData.append("id", id);
-        let statusCode = await fetch(`http://localhost:3000/comments/${id}/${action}`, {
+        let statusCode = await fetch(`${process.env.REACT_APP_SERVER_URL}/comments/${id}/${action}`, {
             mode: "cors",
             credentials: "include",
             method: "post",

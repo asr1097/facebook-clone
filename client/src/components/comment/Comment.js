@@ -19,7 +19,7 @@ const Comment = () => {
 
     useEffect(() => {
         const fetchComment = async() => {
-            let response = await fetch(`http://localhost:3000/comments/${params.id}`, {
+            let response = await fetch(`${process.env.REACT_APP_SERVER_URL}/comments/${params.id}`, {
                 mode: "cors",
                 credentials: "include"
             });

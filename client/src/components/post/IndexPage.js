@@ -38,7 +38,7 @@ const IndexPage = ({loggedIn, user}) => {
 
     useEffect(() => {
         if(loggedIn){
-          fetch(`http://localhost:3000/index`, {
+          fetch(`${process.env.REACT_APP_SERVER_URL}/index`, {
             credentials: "include",
             mode: "cors"  
           })
