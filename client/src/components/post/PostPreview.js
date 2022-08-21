@@ -1,4 +1,4 @@
-import { useContext, useState } from "react";
+import { useContext, useState, useEffect } from "react";
 import { UserContext } from "../../App";
 import { Details } from "../Details";
 import { LikePost } from "./LikePost";
@@ -23,25 +23,31 @@ const PostPreview = ({ _post }) => {
         setPost(newPost);
     };
 
-    return (
-        <div key={post._id}>
-            {post.image ? <img alt="Post" src={`${process.env.REACT_APP_SERVER_URL}/images/` + post.image}></img> 
-            : null}
-            <p>{post.text}</p>
-            <Details 
-                date={post.date}
-                url={post.url}
-                user={post.user} 
-            />
-            <LikePost 
-                postID={post._id} 
-                likes={post.likes}
-                singlePostLiked={singlePostLiked}
-                singlePostUnliked={singlePostUnliked} 
-            />
-            <Link to={`../posts/${post._id}`}>Comments (post.comments.length)</Link>
-        </div>
-    )
+    useEffect(() => {
+        if(!post){setPost(_post)}
+    }, [post, _post])
+
+    if(post) {
+        return (
+            <div key={post._id}>
+                {post.image ? <img alt="Post" src={`${process.env.REACT_APP_SERVER_URL}/images/` + post.image}></img> 
+                : null}
+                <p>{post.text}</p>
+                <Details 
+                    date={post.date}
+                    url={post.url}
+                    user={post.user} 
+                />
+                <LikePost 
+                    postID={post._id} 
+                    likes={post.likes}
+                    singlePostLiked={singlePostLiked}
+                    singlePostUnliked={singlePostUnliked} 
+                />
+                <Link to={`../posts/${post._id}`}>Comments ({post.comments.length})</Link>
+            </div>
+        )
+    }
 };
 
 export { PostPreview };
