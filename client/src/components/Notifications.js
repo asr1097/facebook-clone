@@ -1,5 +1,6 @@
 import { Link } from "react-router-dom";
 import { useEffect, useState } from "react";
+import { DateFormat } from "./Date";
 
 const Notifications = ({ notifs, setNotifsActive }) => {
 
@@ -30,7 +31,7 @@ const Notifications = ({ notifs, setNotifsActive }) => {
                 <div key={index}>
                     <Link to={"../" + notif.profileID.url}>{notif.profileID.name.full} </Link>
                     has liked your <Link to={"../" + notif.postID.url}>post</Link>.
-                    <p>{notif.date}</p>
+                    <DateFormat date={notif.date} />
                 </div>
                 )
             case "post comment":
@@ -39,7 +40,7 @@ const Notifications = ({ notifs, setNotifsActive }) => {
                         <Link to={"../" + notif.profileID.url}>{notif.profileID.name.full} </Link>
                         has <Link to={"../" + notif.newCommentID.url}>commented</Link> 
                         on your <Link to={"../" + notif.postID.url}>post</Link>.
-                        <p>{notif.date}</p>
+                        <DateFormat date={notif.date} />
                     </div>
                 )
             
@@ -49,7 +50,7 @@ const Notifications = ({ notifs, setNotifsActive }) => {
                         <Link to={"../" + notif.profileID.url}>{notif.profileID.name.full} </Link>
                         has <Link to={"../" + notif.newCommentID.url}>replied</Link>
                         to your <Link to={"../" + notif.parentCommentID.url}>comment</Link>.
-                        <p>{notif.date}</p>
+                        <DateFormat date={notif.date} />
                     </div>
                 )
             case "liked comment":
@@ -57,7 +58,7 @@ const Notifications = ({ notifs, setNotifsActive }) => {
                     <div key={index}>
                         <Link to={"../" + notif.profileID.url}>{notif.profileID.name.full} </Link>
                         has liked your <Link to={"../" + notif.commentID.url}>comment</Link>.
-                        <p>{notif.date}</p>
+                        <DateFormat date={notif.date} />
                     </div>
                 )
 
@@ -66,7 +67,7 @@ const Notifications = ({ notifs, setNotifsActive }) => {
                     <div key={index}>
                         <Link to={"../" + notif.profileID.url}>{notif.profileID.name.full}</Link>
                          has accepted your friend request.
-                         <p>{notif.date}</p>
+                         <DateFormat date={notif.date} />
                     </div>
                 )
             

@@ -38,8 +38,6 @@ const Post = () => {
         setPost(newPost);
     };
 
-    
-
     useEffect(() => {
         const fetchPost = async() => {
             let response = await fetch(`${process.env.REACT_APP_SERVER_URL}/posts/${params.id}`, {

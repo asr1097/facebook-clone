@@ -28,7 +28,7 @@ const IndexPage = ({loggedIn, user}) => {
 
     const pushNewComment = (index, comment) => {
         let newData = [...data];
-        newData[index].comments.splice(newData[index].comments.length, 0, comment);
+        newData[index].directComments.splice(newData[index].comments.length, 0, comment);
         setData(newData);
     };
 

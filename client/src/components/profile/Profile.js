@@ -73,6 +73,7 @@ const Profile = () => {
                 <p>{profile.gender}</p>
                 <p>{profile.email}</p>
                 <Link to={`../chat/${profile._id}`}>Message</Link>
+                <Link to={`/profile/${profile._id}/photos`}>Photos</Link>
                 <hr />
                 <div>
                     {postsToRender.map((post, index) => {

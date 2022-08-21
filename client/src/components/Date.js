@@ -30,10 +30,18 @@ const DateFormat = ({ date, url }) => {
         if(url) {return link(url, hours, hoursText)}
         else {return text(hours, hoursText)}
     }
-    else if(parsedDate > 86400 && parsedDate < 86400 * 2) {
+    else if(parsedDate > 86400 && parsedDate < (86400 * 2)) {
         let time = `${dateObject.getHours()}:${dateObject.getMinutes()}`;
-        if(url) {return <Link to={`../${url}`}>Yesterday at {time}</Link>}
-        else{return <p>Yesterday at {time}</p>}
+        if(url) {
+            if(new Date(dateNow).getDate() - dateObject.getDate() === 1) {
+                return <Link to={`../${url}`}>Yesterday at {time}</Link>
+            } else {return <Link to={`../${url}`}>2 days ago</Link>}
+        }
+        else{
+            if(new Date(dateNow).getDate() - dateObject.getDate() === 1) {
+                return <p>Yesterday at {time}o</p>
+            } else{return <p>2 days ago</p>}
+          }
     }
     else if(parsedDate > 86400 * 2 && parsedDate < 86000 * 3) {
         if(url){ return <Link to={`../${url}`}>2 days ago</Link>}

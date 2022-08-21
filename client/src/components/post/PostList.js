@@ -16,7 +16,7 @@ const PostList = ({ post, index, likePost, unlikePost, pushNewComment }) => {
 
     useEffect(() => {
         if(post){setCommentsToRender(post.directComments.slice(0, renderLevel * commentsChunk))}
-    }, [renderLevel, commentsChunk, post])
+    }, [renderLevel, commentsChunk, post, post.directComments])
 
     if(post && commentsToRender) {
         return (
@@ -44,20 +44,17 @@ const PostList = ({ post, index, likePost, unlikePost, pushNewComment }) => {
                 />
                 <div>
                     {commentsToRender.map(comment => {
-                        if(!comment.parentComment){
-                            return (
-                                <PostComment
-                                    key={comment._id} 
-                                    comment={comment}
-                                    postID={post._id}
-                                    index={index}
-                                    pushNewComment={pushNewComment} 
-                                />
-                            )
-                        } else {
-                            return null;
-                        }})
-                    }
+                        
+                        return (
+                            <PostComment
+                                key={comment._id} 
+                                comment={comment}
+                                postID={post._id}
+                                index={index}
+                                pushNewComment={pushNewComment} 
+                            />
+                        )
+                    })}
                     {commentsToRender.length === post.directComments.length ? 
                     null
                     : <button onClick={increaseLevel}>Load more</button>
