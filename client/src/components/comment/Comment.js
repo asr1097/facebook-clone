@@ -4,6 +4,7 @@ import { CommentCommentForm } from "./CommentCommentForm";
 import { LikeComment } from "./LikeComment";
 import { ChildComment } from "./ChildComment";
 import { Details } from "../Details";
+import { PostPreview } from "../post/PostPreview";
 
 const Comment = () => {
 
@@ -42,6 +43,8 @@ const Comment = () => {
     if(comment && commentsToRender){
         return (
             <div>
+                <PostPreview _post={comment.comment.post} />
+                <hr />
                 <p>{comment.comment.text}</p>
                 <Details 
                     date={comment.comment.date} 
