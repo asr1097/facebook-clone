@@ -12,6 +12,7 @@ import { Profile } from "./components/profile/Profile";
 import { NavBar } from "./components/nav/NavBar";
 import { Photos } from "./components/post/Photos";
 import { FriendRequests } from "./components/profile/FriendRequests";
+import { EditProfile } from "./components/profile/EditProfile";
 
 
 const socket = io(`http://localhost:3000`, {
@@ -451,6 +452,10 @@ function App() {
           <Route 
             path="/profile/:id/photos"
             element={<Photos />}
+          />
+          <Route
+            path="/profile/:id/edit"
+            element={<EditProfile />}
           />
         </Routes>
       </FriendsContext.Provider>

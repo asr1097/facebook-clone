@@ -1,17 +1,26 @@
-import { useContext, useState } from "react";
+import { useContext, useState, useEffect } from "react";
 import { FriendsContext } from "../../App";
+import { UserContext } from "../../App";
 import { Link } from "react-router-dom";
 
 const FriendsList = ({ activeUsers, setShowFRList }) => {
     const friends = useContext(FriendsContext);
+    const user = useContext(UserContext);
 
     const [search, setSearch] = useState("");
+    const [list, setList] = useState([]);
 
-    if(friends) {
+    useEffect(() => {
+        if(friends && user && !list.length) {
+            setList([...friends, user])
+        }
+    }, [friends, user, list]);
+
+    if(list.length) {
         return (
             <div>
                 <input type="text" onChange={(ev) => setSearch(ev.target.value)}></input>
-                {friends.filter(friend => friend.name.full.match(new RegExp(search, "gi")))
+                {list.filter(friend => friend.name.full.match(new RegExp(search, "gi")))
                     .map(friend => {
                         return (
                             <div>

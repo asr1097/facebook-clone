@@ -31,6 +31,9 @@ router.post("/:id/delete", helpers.isLogged, upload.fields(multerFields), userCo
 /* Search for users */
 router.post("/search", helpers.isLogged, upload.fields(multerFields), userController.searchUsers);
 
+/* Edit profile */
+router.put("/edit", helpers.isLogged, upload.fields(multerFields), userController.editProfile);
+
 router.get("/:id/photos", helpers.isLogged, userController.getPhotos);
 
 module.exports = router;

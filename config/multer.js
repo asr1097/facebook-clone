@@ -65,7 +65,32 @@ const multerFields = [
     {
         name: "parentCommentID",
         maxCount: 1
-    }
+    },
+
+    {
+        name: "firstName",
+        maxCount: 1
+    },
+
+    {
+        name: "lastName",
+        maxCount: 1
+    },
+
+    {
+        name: "gender",
+        maxCount: 1
+    },
+
+    {
+        name: "DOB",
+        maxCount: 1
+    },
+
+    {
+        name: "location",
+        maxCount: 1
+    },
 ];
 
 exports.multerUpload = multer({

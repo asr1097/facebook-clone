@@ -3,6 +3,7 @@ import { useParams } from "react-router-dom";
 import { UserContext } from "../../App";
 import { PostList } from "../post/PostList";
 import { Link } from "react-router-dom";
+import { DateFormat } from "../Date";
 
 const Profile = () => {
     const params = useParams();
@@ -68,12 +69,13 @@ const Profile = () => {
             <div>
                 <img src={`${process.env.REACT_APP_SERVER_URL}/images/${profile.profilePhoto}`} alt="Profile"/>
                 <p>{profile.name.full}</p>
-                <p>{profile.locaton}</p>
-                <p>{profile.dateOfBirth}</p>
+                <p>{profile.location}</p>
+                <DateFormat date={profile.dateOfBirth} />
                 <p>{profile.gender}</p>
                 <p>{profile.email}</p>
                 <Link to={`../chat/${profile._id}`}>Message</Link>
-                <Link to={`/profile/${profile._id}/photos`}>Photos</Link>
+                <Link to={`/profile/${profile._id}/photos`}> Photos</Link>
+                <Link to={`/profile/${profile._id}/edit`}> Edit</Link>
                 <hr />
                 <div>
                     {postsToRender.map((post, index) => {

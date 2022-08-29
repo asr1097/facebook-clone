@@ -3,6 +3,7 @@ const Post = require("../models/post");
 const Comment = require("../models/comment");
 const Notification = require("../models/notification");
 const helpers = require("../helpers");
+const { body, validationResult } = require("express-validator");
 
 /* Get user profile*/
 exports.getUser = (req, res, next) => {
@@ -115,6 +116,30 @@ exports.deleteUser = (req, res, next) => {
     })
     
 };
+
+exports.editProfile = [
+    body("firstName").exists().isLength({max: 99}).trim().escape(),
+    body("lastName").exists().isLength({max: 99}).trim().escape(),
+    body("location").exists().isLength({max: 99}).trim().escape(),
+    body("gender").exists().escape(),
+    body("DOB").exists().escape(),
+
+    (req, res, next) => {
+        const errors = validationResult(req);
+		if(!errors.isEmpty()) {
+			res.json({err: "Text field must have maximum of 999 characters."})
+		} else {
+            User.findByIdAndUpdate(req.user.id, {
+                "name.first": req.body.firstName,
+                "name.last": req.body.lastName,
+                "name.full": req.body.firstName + " " + req.body.lastName,
+                gender: req.body.gender,
+                location: req.body.location,
+                dateOfBirth: new Date(req.body.DOB)
+            }).then(user => res.sendStatus(200)).catch(err => res.json(err))
+        }
+    }
+]
 
 exports.getPhotos = [
 

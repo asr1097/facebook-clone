@@ -5,13 +5,13 @@ const UserSchema = new Schema({
     fbID: {type: String, required: true},
     email: {type: String},
     name: {
-        first: {type: String},
-        last: {type: String},
+        first: {type: String, maxlength: 99},
+        last: {type: String, maxlength: 99},
         full: {type: String}
     },
     gender: {type: String},
     dateOfBirth: {type: String},
-    location: {type: String},
+    location: {type: String, maxlength: 99},
     profilePhoto: {type: String},
     friendsList: [{type: Schema.Types.ObjectId, ref: "User"}],
     receivedRequests: [{type: Schema.Types.ObjectId, ref: "User"}],

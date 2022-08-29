@@ -8,6 +8,7 @@ const PostList = ({ post, index, likePost, unlikePost, pushNewComment }) => {
 
     const [renderLevel, setRenderLevel] = useState(1);
     const [commentsToRender, setCommentsToRender] = useState();
+    const [showComments, setShowComments] = useState(false);
     const commentsChunk = 3;
 
     const increaseLevel = () => {
@@ -36,30 +37,37 @@ const PostList = ({ post, index, likePost, unlikePost, pushNewComment }) => {
                     likePost={likePost}
                     unlikePost={unlikePost}
                 />
-                <PostCommentForm 
-                    postID={post._id}
-                    user={post.user._id}
-                    index={index}
-                    pushNewComment={pushNewComment}
-                />
-                <div>
-                    {commentsToRender.map(comment => {
-                        
-                        return (
-                            <PostComment
-                                key={comment._id} 
-                                comment={comment}
-                                postID={post._id}
-                                index={index}
-                                pushNewComment={pushNewComment} 
-                            />
-                        )
-                    })}
-                    {commentsToRender.length === post.directComments.length ? 
-                    null
-                    : <button onClick={increaseLevel}>Load more</button>
-                    }
-                </div>
+                
+                <button onClick={() => setShowComments(!showComments)}>
+                    Comments ({post.comments.length})
+                </button>
+                {showComments ? 
+                    <div>
+                        <PostCommentForm 
+                            postID={post._id}
+                            user={post.user._id}
+                            index={index}
+                            pushNewComment={pushNewComment}
+                        />
+                        {commentsToRender.map(comment => {
+                            
+                            return (
+                                <PostComment
+                                    key={comment._id} 
+                                    comment={comment}
+                                    postID={post._id}
+                                    index={index}
+                                    pushNewComment={pushNewComment} 
+                                />
+                            )
+                        })}
+                        {commentsToRender.length === post.directComments.length ? 
+                        null
+                        : <button onClick={increaseLevel}>Load more</button>
+                        }
+                    </div>
+                    : null
+                }
                 <hr />
             </div>
         )
