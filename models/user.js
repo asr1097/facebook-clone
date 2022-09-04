@@ -2,7 +2,8 @@ const mongoose = require("mongoose");
 const Schema = mongoose.Schema;
 
 const UserSchema = new Schema({
-    fbID: {type: String, required: true},
+    fbID: {type: String},
+    googleID: {type: String},
     email: {type: String},
     name: {
         first: {type: String, maxlength: 99},

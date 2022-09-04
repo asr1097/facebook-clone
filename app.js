@@ -14,6 +14,7 @@ const passport = require("passport");
 const cors = require("cors");
 const fs = require("fs");
 const socketIOHandlers = require("./config/socketio-handlers");
+const User = require("./models/user");
 
 const corsOptions = {
   origin: new RegExp(`${process.env.CLIENT_ORIGIN}`),
@@ -48,7 +49,15 @@ const io = require("socket.io")(server, {
 io.use((socket, next) => {
   socket.userID = socket.handshake.auth.socketID;
   next();
-})
+});
+
+passport.serializeUser((user, done) => {
+  done(null, user.id);
+});
+
+passport.deserializeUser((id, done) => {
+  User.findById(id).then(user => done(null, user)).catch(err => done(err, null));
+});
 
 app.use(cors(corsOptions));
 app.use(helmet({

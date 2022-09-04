@@ -13,7 +13,15 @@ router.get("/facebook/redirect", passport.authenticate("facebook", { failureRedi
     res.redirect(process.env.CLIENT_URL);
 });
 
-router.get("/google", passport.authenticate("google"));
+router.get("/google", passport.authenticate("google", {
+	scope: [
+		"email", 
+		"profile",
+		"https://www.googleapis.com/auth/user.gender.read",
+		"https://www.googleapis.com/auth/user.birthday.read",
+		"https://www.googleapis.com/auth/user.addresses.read"
+	]
+}));
 
 router.get("/google/redirect", passport.authenticate("google", {failureRedirect: "/auth/google", failureMessage: true}), 
 	(req, res, next) => {

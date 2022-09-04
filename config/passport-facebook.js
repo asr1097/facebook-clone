@@ -3,14 +3,6 @@ const passport = require("passport");
 const FacebookStrategy = require("passport-facebook");
 const User = require("../models/user");
 
-passport.serializeUser((user, done) => {
-    done(null, user.id);
-});
-
-passport.deserializeUser((id, done) => {
-    User.findById(id).then(user => done(null, user)).catch(err => done(err, null));
-});
-
 passport.use(new FacebookStrategy({
     clientID: process.env.FB_CLIENTID,
     clientSecret: process.env.FB_SECRET,
