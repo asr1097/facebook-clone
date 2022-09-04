@@ -2,6 +2,7 @@ require("dotenv").config();
 const passport = require('passport');
 const GoogleStrategy = require('passport-google-oauth20');
 const User = require("../models/user");
+const axios = require("axios");
 
 passport.use(new GoogleStrategy({
     clientID: process.env.GOOGLE_CLIENTID,
@@ -16,18 +17,24 @@ passport.use(new GoogleStrategy({
 ]
   },
   (accessToken, refreshToken, profile, cb) => {
-    User.findOne({googleID: profile.id}).then(cred => {
+    User.findOne({googleID: profile.id}).then(async(cred) => {
       if (!cred) {
         // The account at Google has not logged in to this app before.  Create a
         // new user record and associate it with the Google account.
+        const response = await axios.get(`https://people.googleapis.com/v1/people/${profile.id}?personFields=birthdays,genders,addresses&access_token=${accessToken}`)
+        let DOB = Date.now();
+        if(response.data.birthdays[0].date) {
+          let dateString = `${response.data.birthdays[0].date.day}/${response.data.birthdays[0].date.month}/${response.data.birthdays[0].date.year}`
+          DOB = new Date(dateString);
+        }
         const user = new User({
             googleID: profile.id,
             "name.first": profile.name.givenName,
             "name.last": profile.name.familyName,
             email: profile._json.email,
-            gender: profile._json.gender,
-            dateOfBirth: profile._json.birthday,
-            location: profile._json.location.name || ""
+            gender: response.data.genders[0] ? response.data.genders[0].formattedValue : "Male",
+            dateOfBirth: DOB,
+            location: ""
         })
         user.save().then(user => {return cb(null, user)}).catch(err => console.log(err))
       } else {
