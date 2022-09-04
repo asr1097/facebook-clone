@@ -5,7 +5,11 @@ const NavBar = ({ loggedIn, setsearchResult, unreadNotifsCount, unreadMsgsGlobal
     
         return (
             <nav>
-                {!loggedIn ? <a href={`${process.env.REACT_APP_SERVER_URL}/auth/facebook`}>Log in</a> 
+                {!loggedIn ?
+                <div>
+                  <a href={`${process.env.REACT_APP_SERVER_URL}/auth/facebook`}>Log in with facebook</a>
+                  <a href={`${process.env.REACT_APP_SERVER_URL}/auth/google`}> Log in with google</a> 
+                </div> 
                 :<a href={`${process.env.REACT_APP_SERVER_URL}/logout`}>Log out</a>}
                 {user ?
                 <div>

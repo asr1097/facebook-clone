@@ -1,5 +1,6 @@
 require("dotenv").config();
 require("./config/passport-facebook");
+require("./config/passport-google");
 const createError = require('http-errors');
 const express = require('express');
 const path = require('path');

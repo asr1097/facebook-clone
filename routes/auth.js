@@ -13,4 +13,13 @@ router.get("/facebook/redirect", passport.authenticate("facebook", { failureRedi
     res.redirect(process.env.CLIENT_URL);
 });
 
+router.get("/google", passport.authenticate("google"));
+
+router.get("/google/redirect", passport.authenticate("google", {failureRedirect: "/auth/google", failureMessage: true}), 
+	(req, res, next) => {
+		res.cookie("loggedIn", "google");
+		res.redirect(process.env.CLIENT_URL);
+	}
+);
+
 module.exports = router;
