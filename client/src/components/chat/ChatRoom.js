@@ -1,15 +1,16 @@
 import { SendMessage } from "./SendMessage";
 import { Message} from "./Message";
 import { useContext, useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
 import { FriendsContext, UserContext } from "../../App";
 
-const ChatRoom = ({ activeRoom, messages, typing }) => {
+const ChatRoom = ({ activeRoom, messages, typing, isMobile }) => {
 
     const [friendName, setFriendName] = useState();
     const friends = useContext(FriendsContext);
     const user = useContext(UserContext);
     const params = useParams();
+    const navigate = useNavigate();
 
     useEffect(() => {
         if(user && params.id && friends && activeRoom && (params.id !== user._id)){
@@ -21,6 +22,7 @@ const ChatRoom = ({ activeRoom, messages, typing }) => {
     if(messages) {
         return (
             <div>
+                {isMobile ? <button onClick={() => navigate(-1)}>Back</button> : null}
                 {messages.map(msg => {
                     return <Message key={msg._id} msg={msg} />
                 })}
