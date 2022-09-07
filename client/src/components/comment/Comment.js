@@ -54,7 +54,7 @@ const Comment = () => {
                 <LikeComment id={comment.comment._id} likes={comment.comment.likes} />
                 <CommentCommentForm 
                     commentOwner={comment.comment.user._id}
-                    postID={comment.comment.post}
+                    postID={comment.comment.post._id}
                     parentCommentID={comment.comment._id}
                 />
                 {commentsToRender.map(childComment => {

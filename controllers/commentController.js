@@ -53,15 +53,15 @@ exports.createComment = [
                 req.comment = comment;
                 if(!req.body.parentCommentID){
                     Post.findByIdAndUpdate(req.body.postID, {$push: {comments: comment._id, directComments: comment._id}})
-                        .then(post => next())
+                        .then(post => next()).catch(err => console.log(err))
                 } else {
                     Promise.all([
                         Post.findByIdAndUpdate(req.body.postID, {$push: {comments: comment._id}}),
                         Comment.findByIdAndUpdate(req.body.parentCommentID, {$push: {childrenComments: comment._id}})
                     ])
-                        .then(post => next())
+                        .then(post => next()).catch(err => console.log(err))
                 }
-            })
+            }).catch(err => console.log(err))
         }
     },
 
