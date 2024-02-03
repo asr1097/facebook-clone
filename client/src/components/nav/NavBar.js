@@ -1,16 +1,14 @@
 import { Link } from "react-router-dom";
 import { SearchBar } from "../search/SearchBar";
+import { LoginPage } from "../LoginPage";
+import { Registration } from "../Registration";
 
-const NavBar = ({ loggedIn, setsearchResult, unreadNotifsCount, unreadMsgsGlobal, user, friendRequests }) => {
-    
+
+const NavBar = ({ setsearchResult, unreadNotifsCount, unreadMsgsGlobal, user, friendRequests }) => {
+
         return (
             <nav>
-                {!loggedIn ?
-                <div>
-                  <a href={`${process.env.REACT_APP_SERVER_URL}/auth/facebook`}>Log in with facebook</a>
-                  <a href={`${process.env.REACT_APP_SERVER_URL}/auth/google`}> Log in with google</a> 
-                </div> 
-                :<a href={`${process.env.REACT_APP_SERVER_URL}/logout`}>Log out</a>}
+                <a href={`${process.env.REACT_APP_SERVER_URL}/logout`}>Log out</a>
                 {user ?
                 <div>
                   <SearchBar setsearchResult={setsearchResult}/>
@@ -27,11 +25,10 @@ const NavBar = ({ loggedIn, setsearchResult, unreadNotifsCount, unreadMsgsGlobal
                     <button>Notifications {unreadNotifsCount ? unreadNotifsCount : null}</button>
                   </Link>
                   <Link to={`/profile/${user._id}`}>{user.name.full}</Link>
-                </div> 
-                  : null}
+                </div>
+                : null}          
             </nav>
         )
-    
 };
 
 export { NavBar };

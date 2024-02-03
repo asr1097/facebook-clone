@@ -30,4 +30,8 @@ router.get("/google/redirect", passport.authenticate("google", {failureRedirect:
 	}
 );
 
+router.get("/register", (req, res, next) => {
+	
+});
+
 module.exports = router;

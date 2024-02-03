@@ -70,7 +70,6 @@ const IndexPage = ({loggedIn, user}) => {
                     : <button onClick={increaseLevel}>Load more</button>
                 }
             </div>
-           
         )
     }
 }
