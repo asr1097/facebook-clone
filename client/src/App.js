@@ -13,6 +13,8 @@ import { NavBar } from "./components/nav/NavBar";
 import { Photos } from "./components/post/Photos";
 import { FriendRequests } from "./components/profile/FriendRequests";
 import { EditProfile } from "./components/profile/EditProfile";
+import { Registration } from "./components/Registration";
+import { LoginPage } from "./components/LoginPage";
 
 
 const socket = io(`http://localhost:3000`, {
@@ -374,94 +376,103 @@ function App() {
 
   return (
     <div className="App">
-      <NavBar 
-        user={user} 
-        loggedIn={loggedIn} 
-        unreadNotifsCount={unreadNotifsCount}
-        unreadMsgsGlobal={unreadMsgsGlobal}
-        friendRequests={friendRequestsCounter}
-        searchResult={searchResult}
-        setsearchResult={setsearchResult}
-      />
-      <UserContext.Provider value={user}>
-      <SocketContext.Provider value={socket}>
-      <FriendsContext.Provider value={friends}>
-        <Routes>
-          <Route path="/" 
-            element={<IndexPage 
-              loggedIn={loggedIn}
-              user={user}
-              />}
-            />
-          <Route 
-            path="/requests"
-            element={<FriendRequests 
-              requests={receivedFriendRequests} 
-              
-            />}
+      {loggedIn ?
+          <NavBar 
+            user={user} 
+            loggedIn={loggedIn} 
+            unreadNotifsCount={unreadNotifsCount}
+            unreadMsgsGlobal={unreadMsgsGlobal}
+            friendRequests={friendRequestsCounter}
+            searchResult={searchResult}
+            setsearchResult={setsearchResult}
           />
-          <Route 
-            path="/chat" 
-            element={<ChatWindow 
-              activeUsers={activeUsers}
-              messages={messages}
-              readMessages={readMessages}
-              activeRoom={activeRoom}
-              typing={typing}
-              setActiveRoom={setActiveRoom}
-              />} 
-          />
-          <Route 
-            path="/chat/:id"
-            element={<ChatWindow 
-              activeUsers={activeUsers}
-              messages={messages}
-              readMessages={readMessages}
-              typing={typing}
-              activeRoom={activeRoom}
-              setActiveRoom={setActiveRoom}
-              />}
-          />
-          <Route 
-            path="/search" 
-            element={<SearchResults 
-              users={searchResult}
-              setsearchResult={setsearchResult}  
+          : <LoginPage />
+      }
+          <UserContext.Provider value={user}>
+          <SocketContext.Provider value={socket}>
+          <FriendsContext.Provider value={friends}>
+            <Routes>
+              <Route path="/" 
+                element={<IndexPage 
+                  loggedIn={loggedIn}
+                  user={user}
+                  />}
+                />
+
+              <Route path="/login" element={<LoginPage/>} />
+              <Route 
+                path="/requests"
+                element={<FriendRequests 
+                  requests={receivedFriendRequests} 
+                  
+                />}
               />
-            } 
-          />
-          <Route 
-            path="/notifications"
-            element={<Notifications 
-              notifs={notifications}
-              setNotifsActive={setNotifsActive}
-              />}
-          />
-          <Route
-            path="/comments/:id"
-            element={<Comment />}
-          />
-          <Route 
-            path="/posts/:id"
-            element={<Post />}
-          />
-          <Route 
-            path="/profile/:id"
-            element={<Profile />}
-          />
-          <Route 
-            path="/profile/:id/photos"
-            element={<Photos />}
-          />
-          <Route
-            path="/profile/:id/edit"
-            element={<EditProfile />}
-          />
-        </Routes>
-      </FriendsContext.Provider>
-      </SocketContext.Provider>
-      </UserContext.Provider>
-    </div>
+              <Route 
+                path="/chat" 
+                element={<ChatWindow 
+                  activeUsers={activeUsers}
+                  messages={messages}
+                  readMessages={readMessages}
+                  activeRoom={activeRoom}
+                  typing={typing}
+                  setActiveRoom={setActiveRoom}
+                  />} 
+              />
+              <Route 
+                path="/chat/:id"
+                element={<ChatWindow 
+                  activeUsers={activeUsers}
+                  messages={messages}
+                  readMessages={readMessages}
+                  typing={typing}
+                  activeRoom={activeRoom}
+                  setActiveRoom={setActiveRoom}
+                  />}
+              />
+              <Route 
+                path="/search" 
+                element={<SearchResults 
+                  users={searchResult}
+                  setsearchResult={setsearchResult}  
+                  />
+                } 
+              />
+              <Route 
+                path="/notifications"
+                element={<Notifications 
+                  notifs={notifications}
+                  setNotifsActive={setNotifsActive}
+                  />}
+              />
+              <Route
+                path="/comments/:id"
+                element={<Comment />}
+              />
+              <Route 
+                path="/posts/:id"
+                element={<Post />}
+              />
+              <Route 
+                path="/profile/:id"
+                element={<Profile />}
+              />
+              <Route 
+                path="/profile/:id/photos"
+                element={<Photos />}
+              />
+              <Route
+                path="/profile/:id/edit"
+                element={<EditProfile />}
+              />
+              <Route 
+                path="/register"
+                element={<Registration/>}
+              />
+            </Routes>
+          </FriendsContext.Provider>
+          </SocketContext.Provider>
+          </UserContext.Provider>
+      </div>
   );
 }
 

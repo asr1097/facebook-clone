@@ -139,7 +139,15 @@ exports.editProfile = [
             }).then(user => res.sendStatus(200)).catch(err => res.json(err))
         }
     }
-]
+];
+
+exports.checkIfRegistered = (req, res, next) => {
+    User.findOne("email", req.body.email)
+        .then(user => {
+            if (user !== null) {return res.sendStatus(200).catch(err => res.json(err))}
+            else {return res.sendStatus(501).catch(err => res.json(err))};
+        })
+};
 
 exports.getPhotos = [
 
