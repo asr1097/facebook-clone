@@ -2,6 +2,7 @@ require("dotenv").config();
 const express = require('express');
 const router = express.Router();
 const passport = require("passport");
+const helpers = require("../helpers");
 
 router.get("/facebook", passport.authenticate("facebook", {
     scope: ["email", "user_gender", "user_location", "user_birthday"]
@@ -30,7 +31,7 @@ router.get("/google/redirect", passport.authenticate("google", {failureRedirect:
 	}
 );
 
-router.get("/register", (req, res, next) => {
+router.post("/registration", helpers.checkIfRegistered, (req, res, next) => {
 	
 });
 

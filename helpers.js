@@ -1,6 +1,7 @@
 require("dotenv").config();
 const mongoose = require("mongoose");
 const Comment = require("./models/comment");
+const User = require("./models/user");
 
 const mongoDB = process.env.MONGODB_URI;
 mongoose.connect(mongoDB, { useUnifiedTopology: true, useNewUrlParser: true });
@@ -35,5 +36,13 @@ exports.findChildComments = (parentCommentID) => {
             }
         })
         .catch(err => console.log(err)))
-}
+};
+
+exports.checkIfRegistered = (req, res, next) => {
+    User.findOne("email", req.body.email)
+        .then(user => {
+            if (user !== null) {return res.sendStatus(501).catch(err => res.json(err))}
+            else {next()};
+        });
+};
 

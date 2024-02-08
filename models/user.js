@@ -4,6 +4,7 @@ const Schema = mongoose.Schema;
 const UserSchema = new Schema({
     fbID: {type: String},
     googleID: {type: String},
+    passwordHash: {type: String},
     email: {type: String},
     name: {
         first: {type: String, maxlength: 99},
@@ -26,8 +27,8 @@ UserSchema.pre("save", function(next) {
 
 UserSchema.pre("save", function(next) {
     if(this.gender === "male") {this.profilePhoto = "/male.png"}
-    else{this.profilePhoto = "/female.png"};
-    next();
+    else{this.profilePhoto = "/female.png"}
+    return next();
 });
 
 UserSchema.pre("insertMany", function(next, docs) {

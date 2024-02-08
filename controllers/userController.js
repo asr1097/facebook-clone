@@ -141,13 +141,19 @@ exports.editProfile = [
     }
 ];
 
-exports.checkIfRegistered = (req, res, next) => {
-    User.findOne("email", req.body.email)
-        .then(user => {
-            if (user !== null) {return res.sendStatus(200).catch(err => res.json(err))}
-            else {return res.sendStatus(501).catch(err => res.json(err))};
+exports.registerUser = [
+    body("firstName").exists().isLength({max: 99}).trim().escape(),
+    body("lastName").exists().isLength({max: 99}).trim().escape(),
+    body("location").exists().isLength({max: 99}).trim().escape(),
+    body("gender").exists().escape(),
+    body("DOB").exists().escape(),
+
+    (req, res, next) => {
+        let newUser = new User({
+            firstName
         })
-};
+    }
+]
 
 exports.getPhotos = [
 
